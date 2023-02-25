@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "hardhat": "^2.12.7"
+    "hardhat": "^2.12.7",
+    "solhint": "^3.4.0"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
