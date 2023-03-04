@@ -9,6 +9,6 @@ describe("Nft contract tests", () => {
         const hardhatNft = await Nft.deploy()
         await hardhatNft.deployed()
 
-        await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner)
+        await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
     })
 })
