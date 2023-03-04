@@ -3,11 +3,13 @@ import { assert, expect } from "chai"
 import { ethers } from "hardhat"
 import { Nft } from "../typechain-types"
 
-describe("Nft contract tests", () => {
-    let owner: SignerWithAddress, nft, hardhatNft: Nft
+describe("Nft minting tests", () => {
+    let owner: SignerWithAddress, addr1: SignerWithAddress, nft, hardhatNft: Nft
+    const firstIndex = 0
+    const secondIndex = 1
 
     beforeEach(async () => {
-        ;[owner] = await ethers.getSigners()
+        ;[owner, addr1] = await ethers.getSigners()
 
         nft = await ethers.getContractFactory("Nft")
         hardhatNft = await nft.deploy()
@@ -18,5 +20,12 @@ describe("Nft contract tests", () => {
         await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
         const nftOwner = await hardhatNft.ownerOf(0)
         assert(nftOwner === owner.address)
+    })
+
+    it("allows anyone to mint", async () => {
+        await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
+        await expect(hardhatNft.connect(addr1).mint())
+            .to.emit(hardhatNft, "NftMinted")
+            .withArgs(addr1.address)
     })
 })
