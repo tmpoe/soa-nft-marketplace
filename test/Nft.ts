@@ -2,6 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { assert, expect } from "chai"
 import { ethers } from "hardhat"
 import { Nft } from "../typechain-types"
+import { BigNumber } from "ethers"
 
 describe("Nft minting tests", () => {
     let owner: SignerWithAddress, addr1: SignerWithAddress, nft, hardhatNft: Nft
@@ -12,21 +13,34 @@ describe("Nft minting tests", () => {
         ;[owner, addr1] = await ethers.getSigners()
 
         nft = await ethers.getContractFactory("Nft")
-        hardhatNft = await nft.deploy()
+        hardhatNft = await nft.deploy(1)
         await hardhatNft.deployed()
     })
 
     it("is mintable", async () => {
-        await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
+        const fee: BigNumber = await hardhatNft.getMintingFee()
+        await expect(hardhatNft.mint({ value: fee.toString() }))
+            .to.emit(hardhatNft, "NftMinted")
+            .withArgs(owner.address)
         const nftOwner = await hardhatNft.ownerOf(0)
         assert(nftOwner === owner.address)
     })
 
     it("allows anyone to mint", async () => {
-        await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
-        await expect(hardhatNft.connect(addr1).mint())
+        const fee: BigNumber = await hardhatNft.getMintingFee()
+        await expect(hardhatNft.mint({ value: fee.toString() }))
+            .to.emit(hardhatNft, "NftMinted")
+            .withArgs(owner.address)
+        await expect(hardhatNft.connect(addr1).mint({ value: fee.toString() }))
             .to.emit(hardhatNft, "NftMinted")
             .withArgs(addr1.address)
+    })
+
+    it("fails to mint in case of insufficient funds", async () => {
+        await expect(hardhatNft.mint()).to.be.revertedWithCustomError(
+            hardhatNft,
+            "Nft__InsufficientFunds"
+        )
     })
 })
 
@@ -39,9 +53,10 @@ describe("Nft behaviour tests", () => {
         ;[owner, addr1] = await ethers.getSigners()
 
         nft = await ethers.getContractFactory("Nft")
-        hardhatNft = await nft.deploy()
+        hardhatNft = await nft.deploy(1)
         await hardhatNft.deployed()
-        await hardhatNft.mint()
+        const fee: BigNumber = await hardhatNft.getMintingFee()
+        await hardhatNft.mint({ value: fee.toString() })
     })
 
     it("can change owners", async () => {
