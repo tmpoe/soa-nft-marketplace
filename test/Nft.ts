@@ -13,7 +13,10 @@ describe("Nft contract tests", () => {
         hardhatNft = await nft.deploy()
         await hardhatNft.deployed()
     })
+
     it("is mintable", async () => {
         await expect(hardhatNft.mint()).to.emit(hardhatNft, "NftMinted").withArgs(owner.address)
+        const nftOwner = await hardhatNft.ownerOf(0)
+        assert(nftOwner === owner.address)
     })
 })
