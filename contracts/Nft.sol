@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
 error Nft__InsufficientFunds();
 
-contract Nft is ERC721, VRFConsumerBaseV2 {
+contract Nft is ERC721URIStorage, VRFConsumerBaseV2 {
     enum Breed {
         Ragdoll,
         Sphynx,
@@ -23,6 +23,8 @@ contract Nft is ERC721, VRFConsumerBaseV2 {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
+    string[3] internal s_tokenUris;
+
     mapping(uint256 => address) public s_requestIdToSender;
 
     event NftRequested(uint256 requestId, address requester);
@@ -36,13 +38,15 @@ contract Nft is ERC721, VRFConsumerBaseV2 {
         address vrfCoordinatorV2,
         uint64 subscriptionId,
         bytes32 gasLane,
-        uint32 callbackGasLimit
+        uint32 callbackGasLimit,
+        string[3] memory tokenUris
     ) ERC721("MyToken", "MTK") VRFConsumerBaseV2(vrfCoordinatorV2) {
         i_mintingFee = mintingFee;
         i_subscriptionId = subscriptionId;
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_gasLane = gasLane;
         i_callbackGasLimit = callbackGasLimit;
+        s_tokenUris = tokenUris;
     }
 
     function requestNft() public payable returns (uint256 requestId) {
@@ -69,6 +73,7 @@ contract Nft is ERC721, VRFConsumerBaseV2 {
         _tokenIdCounter.increment();
         uint256 breed = randomWords[0] % 3;
         _safeMint(owner, tokenId);
+        _setTokenURI(tokenId, s_tokenUris[breed]);
         emit NftMinted(owner, Breed(breed));
     }
 

@@ -45,7 +45,8 @@ describe("Nft minting tests", () => {
             hardhatVrfCoordinatorV2Mock.address,
             subscriptionId,
             gasLane,
-            CALLBACK_GAS_LIMIT
+            CALLBACK_GAS_LIMIT,
+            ["cat1", "cat2", "cat3"]
         )
         await hardhatNft.deployed()
 
@@ -83,6 +84,7 @@ describe("Nft minting tests", () => {
                 try {
                     const tokenCounter = await hardhatNft.getTokenCounter()
                     assert.equal(tokenCounter.toString(), "1")
+                    assert.isTrue((await hardhatNft.tokenURI(0)).includes("cat"))
                     console.log("Nft minted!")
                     resolve()
                 } catch (e) {
