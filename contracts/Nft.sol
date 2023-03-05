@@ -75,4 +75,8 @@ contract Nft is ERC721, VRFConsumerBaseV2 {
     function getMintingFee() public view returns (uint256) {
         return i_mintingFee;
     }
+
+    function getTokenCounter() public view returns (uint256) {
+        return _tokenIdCounter.current();
+    }
 }

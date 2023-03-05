@@ -8,6 +8,7 @@ const BASE_FEE = "250000000000000000" // 0.25 is this the premium in LINK?
 const GAS_PRICE_LINK = 1e9 // link per gas, is this the gas lane? // 0.000000001 LINK per gas
 const FUND_AMOUNT = "1000000000000000000000"
 const CALLBACK_GAS_LIMIT = "500000"
+const REQUEST_CONFIRMATIONS = 3
 
 describe("Nft minting tests", () => {
     let owner: SignerWithAddress,
@@ -75,55 +76,34 @@ describe("Nft minting tests", () => {
             "Nft__InsufficientFunds"
         )
     })
-})
 
-describe("Nft behaviour tests", () => {
-    let owner: SignerWithAddress,
-        addr1: SignerWithAddress,
-        subscriptionId: number,
-        nft,
-        hardhatNft: Nft,
-        vrfCoordinatorV2Mock,
-        hardhatVrfCoordinatorV2Mock: VRFCoordinatorV2Mock
-    const firstIndex = 0
-    const secondIndex = 1
-
-    beforeEach(async () => {
-        ;[owner, addr1] = await ethers.getSigners()
-
-        nft = await ethers.getContractFactory("Nft")
-
-        vrfCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
-        hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(BASE_FEE, GAS_PRICE_LINK)
-
-        const response = await hardhatVrfCoordinatorV2Mock.createSubscription()
-        const receipt: ContractReceipt = await response.wait()
-        subscriptionId = receipt.events![0].args!.subId
-
-        await hardhatVrfCoordinatorV2Mock.fundSubscription(subscriptionId, FUND_AMOUNT)
-        const gasLane = "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc",
-            hardhatNft = await nft.deploy(
-                1,
-                hardhatVrfCoordinatorV2Mock.address,
-                subscriptionId,
-                gasLane,
-                CALLBACK_GAS_LIMIT
-            )
-        await hardhatNft.deployed()
-
-        await hardhatNft.deployed()
-        const fee: BigNumber = await hardhatNft.getMintingFee()
-        await hardhatNft.requestNft({ value: fee.toString() })
-    })
-
-    it.skip("can change owners", async () => {
-        await hardhatNft.transferFrom(owner.address, addr1.address, 0)
-        assert(addr1.address === (await hardhatNft.ownerOf(0)))
-    })
-
-    it.skip("does not allow other then the owner to initiate owner change", async () => {
-        await expect(
-            hardhatNft.connect(addr1).transferFrom(owner.address, addr1.address, 0)
-        ).to.be.revertedWith("ERC721: transfer caller is not owner nor approved")
+    it("mints NFT after random number returned", async function () {
+        await new Promise<void>(async (resolve, reject) => {
+            hardhatNft.once("NftMinted", async () => {
+                try {
+                    const tokenCounter = await hardhatNft.getTokenCounter()
+                    assert.equal(tokenCounter.toString(), "1")
+                    console.log("Nft minted!")
+                    resolve()
+                } catch (e) {
+                    console.log(e)
+                    reject(e)
+                }
+            })
+            try {
+                const fee = await hardhatNft.getMintingFee()
+                const requestNftResponse = await hardhatNft.requestNft({
+                    value: fee.toString(),
+                })
+                const requestNftReceipt = await requestNftResponse.wait(1)
+                await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
+                    requestNftReceipt.events![1].args!.requestId,
+                    hardhatNft.address
+                )
+            } catch (e) {
+                console.log(e)
+                reject(e)
+            }
+        })
     })
 })
