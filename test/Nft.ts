@@ -59,17 +59,17 @@ describe("Nft minting tests", () => {
             .withArgs(1, owner.address)
     })
 
-    it.skip("allows anyone to request", async () => {
+    it("allows anyone to request", async () => {
         const fee: BigNumber = await hardhatNft.getMintingFee()
         await expect(hardhatNft.requestNft({ value: fee.toString() }))
             .to.emit(hardhatNft, "NftRequested")
-            .withArgs(owner.address)
+            .withArgs(1, owner.address)
         await expect(hardhatNft.connect(addr1).requestNft({ value: fee.toString() }))
             .to.emit(hardhatNft, "NftRequested")
-            .withArgs(addr1.address)
+            .withArgs(2, addr1.address)
     })
 
-    it.skip("fails to mint in case of insufficient funds", async () => {
+    it("fails to mint in case of insufficient funds", async () => {
         await expect(hardhatNft.requestNft()).to.be.revertedWithCustomError(
             hardhatNft,
             "Nft__InsufficientFunds"
