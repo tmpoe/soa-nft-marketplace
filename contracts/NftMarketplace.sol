@@ -6,6 +6,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "./Nft.sol";
 
 error NftMarketplace__InsufficientFunds();
+error NftMarketplace__Unauthorized();
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
@@ -28,6 +29,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
 
     event NftRequested(uint256 requestId, address requester);
     event NftMinted(address owner, Breed breed);
+    event NftListed(uint256 nftId, address owner, uint256 price);
 
     constructor(
         address nftContractAddress,
@@ -68,6 +70,17 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         uint256 breed = randomWords[0] % 3;
         nftContract.mint(breed, owner);
         emit NftMinted(owner, Breed(breed));
+    }
+
+    function listNft(uint256 nftId) public payable onlyNftOwner(nftId) {
+        emit NftListed(nftId, msg.sender, msg.value);
+    }
+
+    modifier onlyNftOwner(uint256 nftId) {
+        if (msg.sender != nftContract.ownerOf(nftId)) {
+            revert NftMarketplace__Unauthorized();
+        }
+        _;
     }
 
     function getMintingFee() public view returns (uint256) {

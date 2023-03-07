@@ -183,4 +183,16 @@ describe("Pre-existing Nft tests", () => {
             }
         })
     })
+
+    it("Facilitates listings", async () => {
+        await expect(hardhatNftmarketplace.listNft(0, { value: "10000" }))
+            .to.emit(hardhatNftmarketplace, "NftListed")
+            .withArgs(0, owner.address, 10000)
+    })
+
+    it("only allows nft owner to list", async () => {
+        await expect(
+            hardhatNftmarketplace.connect(addr1).listNft(0, { value: "10000" })
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
+    })
 })
