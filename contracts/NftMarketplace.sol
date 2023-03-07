@@ -7,6 +7,7 @@ import "./Nft.sol";
 
 error NftMarketplace__InsufficientFunds();
 error NftMarketplace__Unauthorized();
+error NftMarketplace__NoPriceSetForListing();
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
@@ -73,6 +74,9 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     }
 
     function listNft(uint256 nftId) public payable onlyNftOwner(nftId) {
+        if (msg.value <= 0) {
+            revert NftMarketplace__NoPriceSetForListing();
+        }
         emit NftListed(nftId, msg.sender, msg.value);
     }
 

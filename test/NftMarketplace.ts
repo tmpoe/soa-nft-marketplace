@@ -195,4 +195,11 @@ describe("Pre-existing Nft tests", () => {
             hardhatNftmarketplace.connect(addr1).listNft(0, { value: "10000" })
         ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
     })
+
+    it("only allows to lift nfts with bigger than 0 price", async () => {
+        await expect(hardhatNftmarketplace.listNft(0)).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__NoPriceSetForListing"
+        )
+    })
 })
