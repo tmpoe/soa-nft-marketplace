@@ -190,6 +190,14 @@ describe("Pre-existing Nft tests", () => {
             .withArgs(0, owner.address, 10000, hardhatNft.address)
     })
 
+    it("does not allow relisting", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+
+        await expect(
+            hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemAlreadyListed")
+    })
+
     it("only allows nft owner to list", async () => {
         await expect(
             hardhatNftmarketplace.connect(addr1).listNft(0, hardhatNft.address, { value: "10000" })

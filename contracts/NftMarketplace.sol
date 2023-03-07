@@ -8,12 +8,18 @@ import "./Nft.sol";
 error NftMarketplace__InsufficientFunds();
 error NftMarketplace__Unauthorized();
 error NftMarketplace__NoPriceSetForListing();
+error NftMarketplace__ItemAlreadyListed();
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
         Ragdoll,
         Sphynx,
         Persian
+    }
+
+    struct Listing {
+        uint256 price;
+        address seller;
     }
 
     uint256 immutable i_mintingFee;
@@ -27,6 +33,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
 
     Nft private nftContract;
     mapping(uint256 => address) public s_requestIdToSender;
+    mapping(address => mapping(uint256 => Listing)) private s_listings;
 
     event NftRequested(uint256 requestId, address requester);
     event NftMinted(address owner, Breed breed);
@@ -77,11 +84,17 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         public
         payable
         onlyNftOwner(nftId)
+        notListed(nftId, ierc721TokenAddress)
     {
         if (msg.value <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
+        s_listings[ierc721TokenAddress][nftId] = Listing(msg.value, msg.sender);
         emit NftListed(nftId, msg.sender, msg.value, ierc721TokenAddress);
+    }
+
+    function getMintingFee() public view returns (uint256) {
+        return i_mintingFee;
     }
 
     modifier onlyNftOwner(uint256 nftId) {
@@ -91,7 +104,11 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         _;
     }
 
-    function getMintingFee() public view returns (uint256) {
-        return i_mintingFee;
+    modifier notListed(uint256 nftId, address ierc721TokenAddress) {
+        Listing memory listing = s_listings[ierc721TokenAddress][nftId];
+        if (listing.price > 0) {
+            revert NftMarketplace__ItemAlreadyListed();
+        }
+        _;
     }
 }
