@@ -102,7 +102,8 @@ describe("Marketplace tests", () => {
                     const tokenCounter = await hardhatNft.getTokenCounter()
                     assert.equal(tokenCounter.toString(), "1")
                     assert.isTrue((await hardhatNft.tokenURI(0)).includes("cat"))
-                    console.log("Nft minted!")
+                    assert.equal(await hardhatNft.ownerOf(0), owner.address)
+                    console.log("Mft binted!")
                     resolve()
                 } catch (e) {
                     console.log(e)
