@@ -56,6 +56,83 @@ describe("Marketplace tests", () => {
             subscriptionId,
             hardhatNftmarketplace.address
         )
+    })
+
+    it("is requestable to mint", async () => {
+        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
+
+        await expect(
+            hardhatNftmarketplace.requestNft({ value: fee.toString(), from: owner.address })
+        )
+            .to.emit(hardhatNftmarketplace, "NftRequested")
+            .withArgs(1, owner.address)
+    })
+
+    it("allows anyone to request", async () => {
+        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
+        await expect(hardhatNftmarketplace.requestNft({ value: fee.toString() }))
+            .to.emit(hardhatNftmarketplace, "NftRequested")
+            .withArgs(1, owner.address)
+        await expect(hardhatNftmarketplace.connect(addr1).requestNft({ value: fee.toString() }))
+            .to.emit(hardhatNftmarketplace, "NftRequested")
+            .withArgs(2, addr1.address)
+    })
+
+    it("fails to mint in case of insufficient funds", async () => {
+        await expect(hardhatNftmarketplace.requestNft()).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__InsufficientFunds"
+        )
+    })
+})
+
+describe("Pre-existing Nft tests", () => {
+    let owner: SignerWithAddress,
+        addr1: SignerWithAddress,
+        subscriptionId: number,
+        nft,
+        hardhatNft: Nft,
+        vrfCoordinatorV2Mock,
+        hardhatVrfCoordinatorV2Mock: VRFCoordinatorV2Mock,
+        nftmarketplace,
+        hardhatNftmarketplace: NftMarketplace
+
+    beforeEach(async () => {
+        ;[owner, addr1] = await ethers.getSigners()
+
+        nft = await ethers.getContractFactory("Nft")
+        vrfCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
+        hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(BASE_FEE, GAS_PRICE_LINK)
+
+        const response = await hardhatVrfCoordinatorV2Mock.createSubscription({
+            from: owner.address,
+        })
+
+        const receipt: ContractReceipt = await response.wait()
+        subscriptionId = receipt.events![0].args!.subId
+
+        await hardhatVrfCoordinatorV2Mock.fundSubscription(subscriptionId, FUND_AMOUNT, {
+            from: owner.address,
+        })
+        const gasLane = ethers.constants.HashZero
+        hardhatNft = await nft.deploy(["cat1", "cat2", "cat3"])
+        await hardhatNft.deployed()
+
+        nftmarketplace = await ethers.getContractFactory("NftMarketplace")
+        hardhatNftmarketplace = await nftmarketplace.deploy(
+            hardhatNft.address,
+            1,
+            hardhatVrfCoordinatorV2Mock.address,
+            subscriptionId,
+            gasLane,
+            CALLBACK_GAS_LIMIT
+        )
+        hardhatNftmarketplace.deployed()
+
+        await hardhatVrfCoordinatorV2Mock.addConsumer(
+            subscriptionId,
+            hardhatNftmarketplace.address
+        )
 
         const fee = await hardhatNftmarketplace.getMintingFee()
         const requestNftResponse = await hardhatNftmarketplace.requestNft({
@@ -66,38 +143,17 @@ describe("Marketplace tests", () => {
             requestNftReceipt.events![1].args!.requestId,
             hardhatNftmarketplace.address
         )
-    })
 
-    it("is requestable to mint", async () => {
-        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
-
-        await expect(
-            hardhatNftmarketplace.requestNft({ value: fee.toString(), from: owner.address })
-        )
-            .to.emit(hardhatNftmarketplace, "NftRequested")
-            .withArgs(2, owner.address)
-    })
-
-    it("allows anyone to request", async () => {
-        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
-        await expect(hardhatNftmarketplace.requestNft({ value: fee.toString() }))
-            .to.emit(hardhatNftmarketplace, "NftRequested")
-            .withArgs(2, owner.address)
-        await expect(hardhatNftmarketplace.connect(addr1).requestNft({ value: fee.toString() }))
-            .to.emit(hardhatNftmarketplace, "NftRequested")
-            .withArgs(3, addr1.address)
-    })
-
-    it("fails to mint in case of insufficient funds", async () => {
-        await expect(hardhatNftmarketplace.requestNft()).to.be.revertedWithCustomError(
-            hardhatNftmarketplace,
-            "NftMarketplace__InsufficientFunds"
-        )
+        const tokenCounter = await hardhatNft.getTokenCounter()
+        assert.equal(tokenCounter.toString(), "1")
+        assert.isTrue((await hardhatNft.tokenURI(0)).includes("cat"))
+        assert.equal(await hardhatNft.ownerOf(0), owner.address)
     })
 
     it("mints NFT after random number returned", async function () {
         await new Promise<void>(async (resolve, reject) => {
             hardhatNftmarketplace.once("NftMinted", async () => {
+                console.log("triggered")
                 try {
                     const tokenCounter = await hardhatNft.getTokenCounter()
                     assert.equal(tokenCounter.toString(), "1")
@@ -111,11 +167,12 @@ describe("Marketplace tests", () => {
                 }
             })
             try {
-                const fee = await hardhatNftmarketplace.getMintingFee()
-                const requestNftResponse = await hardhatNftmarketplace.requestNft({
+                let fee = await hardhatNftmarketplace.getMintingFee()
+                let requestNftResponse = await hardhatNftmarketplace.requestNft({
                     value: fee.toString(),
                 })
-                const requestNftReceipt = await requestNftResponse.wait(1)
+
+                let requestNftReceipt = await requestNftResponse.wait(1)
                 await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
                     requestNftReceipt.events![1].args!.requestId,
                     hardhatNft.address

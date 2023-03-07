@@ -65,7 +65,6 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         override
     {
         address owner = s_requestIdToSender[requestId]; // should I delete after query?
-
         uint256 breed = randomWords[0] % 3;
         nftContract.mint(breed, owner);
         emit NftMinted(owner, Breed(breed));
