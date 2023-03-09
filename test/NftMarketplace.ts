@@ -227,4 +227,10 @@ describe("Pre-existing Nft tests", () => {
             hardhatNftmarketplace.connect(addr1).cancelListing(0, hardhatNft.address)
         ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
     })
+
+    it("doesn not allow to cancel non-existent listing", async () => {
+        await expect(
+            hardhatNftmarketplace.cancelListing(0, hardhatNft.address)
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemNotListed")
+    })
 })
