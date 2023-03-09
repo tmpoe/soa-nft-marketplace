@@ -39,6 +39,12 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     event NftRequested(uint256 requestId, address requester);
     event NftMinted(address owner, Breed breed);
     event NftListed(uint256 nftId, address owner, uint256 price, address ierc721TokenAddress);
+    event NftListingUpdated(
+        uint256 nftId,
+        address owner,
+        uint256 price,
+        address ierc721TokenAddress
+    );
     event NftListingCancelled(uint256 nftId, address owner, address ierc721TokenAddress);
 
     constructor(
@@ -92,6 +98,18 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         }
         s_listings[ierc721TokenAddress][nftId] = Listing(price, msg.sender);
         emit NftListed(nftId, msg.sender, price, ierc721TokenAddress);
+    }
+
+    function updateListing(
+        uint256 nftId,
+        address ierc721TokenAddress,
+        uint256 price
+    ) public payable onlyNftOwner(nftId) isListed(nftId, ierc721TokenAddress) {
+        if (price <= 0) {
+            revert NftMarketplace__NoPriceSetForListing();
+        }
+        s_listings[ierc721TokenAddress][nftId].price = price;
+        emit NftListingUpdated(nftId, msg.sender, price, ierc721TokenAddress);
     }
 
     function cancelListing(uint256 nftId, address ierc721TokenAddress)

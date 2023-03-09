@@ -236,4 +236,28 @@ describe("Pre-existing Nft tests", () => {
             .to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemNotListed")
             .withArgs(0, hardhatNft.address)
     })
+
+    it("allows to update the price of a listing", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(hardhatNftmarketplace.updateListing(0, hardhatNft.address, PRICE))
+            .to.emit(hardhatNftmarketplace, "NftListingUpdated")
+            .withArgs(0, owner.address, PRICE, hardhatNft.address)
+    })
+
+    it("allows only owner to update the price of a listing", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(
+            hardhatNftmarketplace.connect(addr1).updateListing(0, hardhatNft.address, PRICE)
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
+    })
+
+    it("does not allow to update the price of a listing to zero or negative", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(
+            hardhatNftmarketplace.updateListing(0, hardhatNft.address, 0)
+        ).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__NoPriceSetForListing"
+        )
+    })
 })
