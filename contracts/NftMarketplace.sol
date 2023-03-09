@@ -5,6 +5,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "./Nft.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 error NftMarketplace__InsufficientFunds();
 error NftMarketplace__IncorrectPrice();
@@ -16,7 +17,7 @@ error NftMarketplace__NotApprovedForMarketplace();
 error NftMarketplace__SellerCannotBeBuyer();
 error NftMarketplace__NoProceedingsToWithdraw(address);
 
-contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
+contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
     enum Breed {
         Ragdoll,
         Sphynx,
@@ -100,6 +101,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         public
         payable
         isListed(nftId, ierc721TokenAddress)
+        nonReentrant
     {
         Listing memory listing = s_listings[ierc721TokenAddress][nftId];
         if (msg.value != listing.price) {
@@ -152,7 +154,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         uint256 nftId,
         address ierc721TokenAddress,
         uint256 price
-    ) public payable onlyNftOwner(nftId) isListed(nftId, ierc721TokenAddress) {
+    ) public payable onlyNftOwner(nftId) isListed(nftId, ierc721TokenAddress) nonReentrant {
         if (price <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
