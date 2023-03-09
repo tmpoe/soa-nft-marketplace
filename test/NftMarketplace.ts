@@ -212,4 +212,11 @@ describe("Pre-existing Nft tests", () => {
             "NftMarketplace__NoPriceSetForListing"
         )
     })
+
+    it("allows to cancel listings", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+        await expect(hardhatNftmarketplace.cancelListing(0, hardhatNft.address))
+            .to.emit(hardhatNftmarketplace, "NftListingCancelled")
+            .withArgs(0, owner.address, hardhatNft.address)
+    })
 })

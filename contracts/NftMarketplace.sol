@@ -9,6 +9,7 @@ error NftMarketplace__InsufficientFunds();
 error NftMarketplace__Unauthorized();
 error NftMarketplace__NoPriceSetForListing();
 error NftMarketplace__ItemAlreadyListed();
+error NftMarketplace__ItemNotListed();
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
@@ -38,6 +39,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     event NftRequested(uint256 requestId, address requester);
     event NftMinted(address owner, Breed breed);
     event NftListed(uint256 nftId, address owner, uint256 price, address ierc721TokenAddress);
+    event NftListingCancelled(uint256 nftId, address owner, address ierc721TokenAddress);
 
     constructor(
         address nftContractAddress,
@@ -93,6 +95,15 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         emit NftListed(nftId, msg.sender, msg.value, ierc721TokenAddress);
     }
 
+    function cancelListing(uint256 nftId, address ierc721TokenAddress)
+        public
+        onlyNftOwner(nftId)
+        listed(nftId, ierc721TokenAddress)
+    {
+        delete s_listings[ierc721TokenAddress][nftId];
+        emit NftListingCancelled(nftId, msg.sender, ierc721TokenAddress);
+    }
+
     function getMintingFee() public view returns (uint256) {
         return i_mintingFee;
     }
@@ -108,6 +119,14 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         Listing memory listing = s_listings[ierc721TokenAddress][nftId];
         if (listing.price > 0) {
             revert NftMarketplace__ItemAlreadyListed();
+        }
+        _;
+    }
+
+    modifier listed(uint256 nftId, address ierc721TokenAddress) {
+        Listing memory listing = s_listings[ierc721TokenAddress][nftId];
+        if (listing.price <= 0) {
+            revert NftMarketplace__ItemNotListed();
         }
         _;
     }
