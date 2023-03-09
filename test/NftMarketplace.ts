@@ -194,9 +194,12 @@ describe("Pre-existing Nft tests", () => {
     it("does not allow relisting", async () => {
         hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
 
-        await expect(
-            hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
-        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemAlreadyListed")
+        await expect(hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE))
+            .to.be.revertedWithCustomError(
+                hardhatNftmarketplace,
+                "NftMarketplace__ItemAlreadyListed"
+            )
+            .withArgs(0, hardhatNft.address)
     })
 
     it("only allows nft owner to list", async () => {
@@ -229,8 +232,8 @@ describe("Pre-existing Nft tests", () => {
     })
 
     it("doesn not allow to cancel non-existent listing", async () => {
-        await expect(
-            hardhatNftmarketplace.cancelListing(0, hardhatNft.address)
-        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemNotListed")
+        await expect(hardhatNftmarketplace.cancelListing(0, hardhatNft.address))
+            .to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemNotListed")
+            .withArgs(0, hardhatNft.address)
     })
 })

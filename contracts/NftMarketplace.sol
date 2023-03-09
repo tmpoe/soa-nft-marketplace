@@ -8,8 +8,8 @@ import "./Nft.sol";
 error NftMarketplace__InsufficientFunds();
 error NftMarketplace__Unauthorized();
 error NftMarketplace__NoPriceSetForListing();
-error NftMarketplace__ItemAlreadyListed();
-error NftMarketplace__ItemNotListed();
+error NftMarketplace__ItemAlreadyListed(uint256 nftId, address nftAddress);
+error NftMarketplace__ItemNotListed(uint256 nftId, address nftAddress);
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
@@ -97,7 +97,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     function cancelListing(uint256 nftId, address ierc721TokenAddress)
         public
         onlyNftOwner(nftId)
-        listed(nftId, ierc721TokenAddress)
+        isListed(nftId, ierc721TokenAddress)
     {
         delete s_listings[ierc721TokenAddress][nftId];
         emit NftListingCancelled(nftId, msg.sender, ierc721TokenAddress);
@@ -117,15 +117,15 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     modifier notListed(uint256 nftId, address ierc721TokenAddress) {
         Listing memory listing = s_listings[ierc721TokenAddress][nftId];
         if (listing.price > 0) {
-            revert NftMarketplace__ItemAlreadyListed();
+            revert NftMarketplace__ItemAlreadyListed(nftId, ierc721TokenAddress);
         }
         _;
     }
 
-    modifier listed(uint256 nftId, address ierc721TokenAddress) {
+    modifier isListed(uint256 nftId, address ierc721TokenAddress) {
         Listing memory listing = s_listings[ierc721TokenAddress][nftId];
         if (listing.price <= 0) {
-            revert NftMarketplace__ItemNotListed();
+            revert NftMarketplace__ItemNotListed(nftId, ierc721TokenAddress);
         }
         _;
     }
