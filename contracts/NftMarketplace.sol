@@ -14,7 +14,7 @@ error NftMarketplace__ItemAlreadyListed(uint256 nftId, address nftAddress);
 error NftMarketplace__ItemNotListed(uint256 nftId, address nftAddress);
 error NftMarketplace__NotApprovedForMarketplace();
 error NftMarketplace__SellerCannotBeBuyer();
-error NftMarketplace__NoProceedingsToWithdra(address);
+error NftMarketplace__NoProceedingsToWithdraw(address);
 
 contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
     enum Breed {
@@ -122,7 +122,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         uint256 senderProceedings = s_proceedings[msg.sender];
 
         if (senderProceedings <= 0) {
-            revert NftMarketplace__NoProceedingsToWithdra(msg.sender);
+            revert NftMarketplace__NoProceedingsToWithdraw(msg.sender);
         }
 
         delete s_proceedings[msg.sender];

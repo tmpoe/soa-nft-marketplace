@@ -277,4 +277,19 @@ describe("Pre-existing Nft tests", () => {
         const ownerEndEth = await ethers.provider.getBalance(owner.address)
         assert.isTrue(ownerEndEth > ownerStartEth)
     })
+
+    it("does not allow to buy listed nft item with incorrect send value", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(
+            hardhatNftmarketplace.connect(addr1).buyNft(0, hardhatNft.address, { value: "1" })
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__IncorrectPrice")
+
+        assert.isTrue((await hardhatNft.ownerOf(0)) === owner.address)
+        await expect(hardhatNftmarketplace.withdrawProceedings())
+            .to.be.revertedWithCustomError(
+                hardhatNftmarketplace,
+                "NftMarketplace__NoProceedingsToWithdraw"
+            )
+            .withArgs(owner.address)
+    })
 })
