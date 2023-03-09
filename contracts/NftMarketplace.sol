@@ -4,7 +4,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "./Nft.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 error NftMarketplace__InsufficientFunds();
@@ -136,7 +136,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         uint256 nftId,
         address ierc721TokenAddress,
         uint256 price
-    ) public payable onlyNftOwner(nftId) notListed(nftId, ierc721TokenAddress) {
+    ) public payable isOwner(nftId, ierc721TokenAddress) notListed(nftId, ierc721TokenAddress) {
         if (price <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
@@ -154,7 +154,13 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         uint256 nftId,
         address ierc721TokenAddress,
         uint256 price
-    ) public payable onlyNftOwner(nftId) isListed(nftId, ierc721TokenAddress) nonReentrant {
+    )
+        public
+        payable
+        isOwner(nftId, ierc721TokenAddress)
+        isListed(nftId, ierc721TokenAddress)
+        nonReentrant
+    {
         if (price <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
@@ -164,7 +170,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
 
     function cancelListing(uint256 nftId, address ierc721TokenAddress)
         public
-        onlyNftOwner(nftId)
+        isOwner(nftId, ierc721TokenAddress)
         isListed(nftId, ierc721TokenAddress)
     {
         delete s_listings[ierc721TokenAddress][nftId];
@@ -175,8 +181,9 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
         return i_mintingFee;
     }
 
-    modifier onlyNftOwner(uint256 nftId) {
-        if (msg.sender != nftContract.ownerOf(nftId)) {
+    modifier isOwner(uint256 nftId, address ierc721TokenAddress) {
+        IERC721 nft = IERC721(ierc721TokenAddress);
+        if (msg.sender != nft.ownerOf(nftId)) {
             revert NftMarketplace__Unauthorized();
         }
         _;
