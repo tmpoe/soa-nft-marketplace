@@ -82,17 +82,16 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2 {
         emit NftMinted(owner, Breed(breed));
     }
 
-    function listNft(uint256 nftId, address ierc721TokenAddress)
-        public
-        payable
-        onlyNftOwner(nftId)
-        notListed(nftId, ierc721TokenAddress)
-    {
-        if (msg.value <= 0) {
+    function listNft(
+        uint256 nftId,
+        address ierc721TokenAddress,
+        uint256 price
+    ) public payable onlyNftOwner(nftId) notListed(nftId, ierc721TokenAddress) {
+        if (price <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
-        s_listings[ierc721TokenAddress][nftId] = Listing(msg.value, msg.sender);
-        emit NftListed(nftId, msg.sender, msg.value, ierc721TokenAddress);
+        s_listings[ierc721TokenAddress][nftId] = Listing(price, msg.sender);
+        emit NftListed(nftId, msg.sender, price, ierc721TokenAddress);
     }
 
     function cancelListing(uint256 nftId, address ierc721TokenAddress)

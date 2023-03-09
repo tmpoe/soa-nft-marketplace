@@ -8,6 +8,7 @@ const BASE_FEE = "250000000000000000" // 0.25 is this the premium in LINK?
 const GAS_PRICE_LINK = 1e9 // link per gas, is this the gas lane? // 0.000000001 LINK per gas
 const FUND_AMOUNT = "1000000000000000000000"
 const CALLBACK_GAS_LIMIT = "500000"
+const PRICE = ethers.utils.parseEther("0.1")
 
 describe("Marketplace tests", () => {
     let owner: SignerWithAddress,
@@ -185,28 +186,28 @@ describe("Pre-existing Nft tests", () => {
     })
 
     it("Facilitates listings", async () => {
-        await expect(hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" }))
+        await expect(hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE))
             .to.emit(hardhatNftmarketplace, "NftListed")
-            .withArgs(0, owner.address, 10000, hardhatNft.address)
+            .withArgs(0, owner.address, PRICE, hardhatNft.address)
     })
 
     it("does not allow relisting", async () => {
-        hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
 
         await expect(
-            hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+            hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
         ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__ItemAlreadyListed")
     })
 
     it("only allows nft owner to list", async () => {
         await expect(
-            hardhatNftmarketplace.connect(addr1).listNft(0, hardhatNft.address, { value: "10000" })
+            hardhatNftmarketplace.connect(addr1).listNft(0, hardhatNft.address, PRICE)
         ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
     })
 
     it("only allows to lift nfts with bigger than 0 price", async () => {
         await expect(
-            hardhatNftmarketplace.listNft(0, hardhatNft.address)
+            hardhatNftmarketplace.listNft(0, hardhatNft.address, 0)
         ).to.be.revertedWithCustomError(
             hardhatNftmarketplace,
             "NftMarketplace__NoPriceSetForListing"
@@ -214,7 +215,7 @@ describe("Pre-existing Nft tests", () => {
     })
 
     it("allows to cancel listings", async () => {
-        hardhatNftmarketplace.listNft(0, hardhatNft.address, { value: "10000" })
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
         await expect(hardhatNftmarketplace.cancelListing(0, hardhatNft.address))
             .to.emit(hardhatNftmarketplace, "NftListingCancelled")
             .withArgs(0, owner.address, hardhatNft.address)
