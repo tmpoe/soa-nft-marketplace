@@ -214,10 +214,17 @@ describe("Pre-existing Nft tests", () => {
         )
     })
 
-    it("allows to cancel listings", async () => {
+    it("allows to cancel listing", async () => {
         hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
         await expect(hardhatNftmarketplace.cancelListing(0, hardhatNft.address))
             .to.emit(hardhatNftmarketplace, "NftListingCancelled")
             .withArgs(0, owner.address, hardhatNft.address)
+    })
+
+    it("allows only owner to cancel listing", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(
+            hardhatNftmarketplace.connect(addr1).cancelListing(0, hardhatNft.address)
+        ).to.be.revertedWithCustomError(hardhatNftmarketplace, "NftMarketplace__Unauthorized")
     })
 })
