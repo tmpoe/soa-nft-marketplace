@@ -144,7 +144,7 @@ describe("Pre-existing Nft tests", () => {
             requestNftReceipt.events![1].args!.requestId,
             hardhatNftmarketplace.address
         )
-
+        await hardhatNft.approve(hardhatNftmarketplace.address, 0)
         const tokenCounter = await hardhatNft.getTokenCounter()
         assert.equal(tokenCounter.toString(), "1")
         assert.isTrue((await hardhatNft.tokenURI(0)).includes("cat"))
@@ -259,5 +259,22 @@ describe("Pre-existing Nft tests", () => {
             hardhatNftmarketplace,
             "NftMarketplace__NoPriceSetForListing"
         )
+    })
+
+    it("allows to buy listed nft items", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        const ownerStartEth = await ethers.provider.getBalance(owner.address)
+        expect(
+            await hardhatNftmarketplace
+                .connect(addr1)
+                .buyNft(0, hardhatNft.address, { value: PRICE })
+        )
+            .to.emit(hardhatNftmarketplace, "NftSold")
+            .withArgs(addr1, 0, hardhatNft.address, PRICE)
+
+        assert.isTrue((await hardhatNft.ownerOf(0)) === addr1.address)
+        await hardhatNftmarketplace.withdrawProceedings()
+        const ownerEndEth = await ethers.provider.getBalance(owner.address)
+        assert.isTrue(ownerEndEth > ownerStartEth)
     })
 })
