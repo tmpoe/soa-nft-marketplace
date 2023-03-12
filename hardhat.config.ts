@@ -6,7 +6,6 @@ import "solidity-coverage"
 import * as dotenv from "dotenv"
 dotenv.config({ path: __dirname + "/.env" })
 
-console.log(process.env.SEPOLIA_RPC_URL)
 const SEPOLIA_RPC_URL =
     process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/64559bcccfe64f5899d0cb9c829af086"
 

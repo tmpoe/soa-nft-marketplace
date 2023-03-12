@@ -20,7 +20,6 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
 
     const contractAddresses = JSON.parse(fs.readFileSync(addressLocations, "utf8"))
     const nativeNftAddress = contractAddresses[chainId]["Nft"].at(-1)
-    console.log(nativeNftAddress)
     log("----------------------------------------------------")
 
     let args = [
