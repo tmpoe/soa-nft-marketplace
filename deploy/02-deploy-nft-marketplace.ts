@@ -1,9 +1,14 @@
 import { network } from "hardhat"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-const { networkConfig, VERIFICATION_BLOCK_CONFIRMATIONS } = require("../helper-hardhat-config")
+const {
+    networkConfig,
+    developmentChains,
+    VERIFICATION_BLOCK_CONFIRMATIONS,
+} = require("../helper-hardhat-config")
 const fs = require("fs")
 import { addressLocations } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
+import { verify } from "../utils/verify"
 
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
@@ -35,6 +40,9 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     })
     log("----------------------------------------------------")
     updateContractAddress("NftMarketplace", nftMarketplace.address)
+    if (!developmentChains.includes(networkConfig[chainId].name)) {
+        await verify(nftMarketplace.address, args)
+    }
 }
 
 module.exports.tags = ["all", "nftMarketplace"]

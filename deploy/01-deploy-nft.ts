@@ -1,11 +1,18 @@
 import { ethers } from "hardhat"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } from "../helper-hardhat-config"
+import {
+    developmentChains,
+    networkConfig,
+    VERIFICATION_BLOCK_CONFIRMATIONS,
+} from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
+import { verify } from "../utils/verify"
 
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
     const { deployer } = await hre.getNamedAccounts()
+    const { getChainId } = hre
+    const chainId = await getChainId()
 
     const waitBlockConfirmations = VERIFICATION_BLOCK_CONFIRMATIONS
 
@@ -27,6 +34,10 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     })
     log("----------------------------------------------------")
     updateContractAddress("Nft", nft.address)
+
+    if (!developmentChains.includes(networkConfig[chainId].name)) {
+        await verify(nft.address, args)
+    }
 }
 
 module.exports.tags = ["all", "nft"]

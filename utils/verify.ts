@@ -1,13 +1,14 @@
-const { run } = require("hardhat")
+import { run } from "hardhat"
 
-const verify = async (contractAddress, args) => {
-    console.log("Verifying contract...")
+const verify = async (contractAddress: string, args: Array<any>) => {
+    console.log(`Verifying contract ${contractAddress}`)
     try {
         await run("verify:verify", {
             address: contractAddress,
             constructorArguments: args,
         })
-    } catch (e) {
+        console.log("Verified")
+    } catch (e: any) {
         if (e.message.toLowerCase().includes("already verified")) {
             console.log("Already verified!")
         } else {
@@ -16,6 +17,4 @@ const verify = async (contractAddress, args) => {
     }
 }
 
-module.exports = {
-    verify,
-}
+export { verify }

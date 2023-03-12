@@ -1,8 +1,4 @@
 const networkConfig = {
-    default: {
-        name: "hardhat",
-        keepersUpdateInterval: "30",
-    },
     31337: {
         name: "localhost",
         subscriptionId: "415",
