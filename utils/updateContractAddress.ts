@@ -2,16 +2,22 @@ const hre = require("hardhat")
 const fs = require("fs")
 import { addressLocations } from "../helper-hardhat-config"
 
-async function updateContractAddress(contractName: string) {
+async function updateContractAddress(contractName: string, contractAddress: string) {
     const chainId = hre.network.config.chainId.toString()
-    const nftMarketplace = await hre.ethers.getContract(contractName)
     const contractAddresses = JSON.parse(fs.readFileSync(addressLocations, "utf8"))
     if (chainId in contractAddresses) {
-        if (!contractAddresses[chainId][contractName].includes(nftMarketplace.address)) {
-            contractAddresses[chainId][contractName].push(nftMarketplace.address)
+        if (!contractAddresses[chainId][contractName]) {
+            contractAddresses[chainId] = {
+                [contractName]: [contractAddress],
+                ...contractAddresses[chainId],
+            }
+        } else if (!contractAddresses[chainId][contractName].includes(contractAddress)) {
+            contractAddresses[chainId][contractName].push(contractAddress)
         }
     } else {
-        contractAddresses[chainId] = { NftMarketplace: [nftMarketplace.address] }
+        contractAddresses[chainId] = {
+            [contractName]: [contractAddress],
+        }
     }
     fs.writeFileSync(addressLocations, JSON.stringify(contractAddresses))
 }

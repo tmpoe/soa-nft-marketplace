@@ -33,9 +33,8 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
         log: true,
         waitConfirmations: waitBlockConfirmations,
     })
-
     log("----------------------------------------------------")
-    updateContractAddress("NftMarketplace")
+    updateContractAddress("NftMarketplace", nftMarketplace.address)
 }
 
 module.exports.tags = ["all", "nftMarketplace"]
