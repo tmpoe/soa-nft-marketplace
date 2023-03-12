@@ -1,15 +1,17 @@
 import { ethers } from "hardhat"
-const { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } = require("../helper-hardhat-config")
+import { HardhatRuntimeEnvironment } from "hardhat/types"
+import { developmentChains, VERIFICATION_BLOCK_CONFIRMATIONS } from "../helper-hardhat-config"
+import { updateContractAddress } from "../utils/updateContractAddress"
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
-    const { deploy, log } = deployments
-    const { deployer } = await getNamedAccounts()
+module.exports = async (hre: HardhatRuntimeEnvironment) => {
+    const { deploy, log } = hre.deployments
+    const { deployer } = await hre.getNamedAccounts()
 
     const waitBlockConfirmations = VERIFICATION_BLOCK_CONFIRMATIONS
 
     log("----------------------------------------------------")
 
-    args = [
+    let args: Array<Array<string>> = [
         [
             "https://ipfs.io/ipfs/QmZjgbNwQLFmbvoKdBRUjYZSGGY1dnuZCzYDg34Vk79vRs",
             "https://ipfs.io/ipfs/QmadRJjCCH55pm9xhkA3VGhMDhNspnjxoZGxifjEivdQua",
@@ -24,11 +26,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         waitConfirmations: waitBlockConfirmations,
     })
 
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        log("Verifying...")
-        await verify(nft, args)
-    }
     log("----------------------------------------------------")
+    updateContractAddress("Nft")
 }
 
 module.exports.tags = ["all", "nft"]
