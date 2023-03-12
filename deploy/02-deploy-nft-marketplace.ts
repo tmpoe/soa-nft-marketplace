@@ -19,12 +19,12 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     log("----------------------------------------------------")
 
     let args = [
+        nativeNftAddress,
         "10000",
-        networkConfig[chainId].subscriptionId,
         networkConfig[chainId].vrfCoordinatorV2,
+        networkConfig[chainId].subscriptionId,
         networkConfig[chainId].gasLane,
         networkConfig[chainId].callbackGasLimit,
-        nativeNftAddress,
     ]
 
     const nftMarketplace = await deploy("NftMarketplace", {
