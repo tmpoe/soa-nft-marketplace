@@ -9,13 +9,16 @@ import { verify } from "../utils/verify"
 
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
+    const { network, getChainId } = hre
     const { deployer } = await hre.getNamedAccounts()
-    const { getChainId } = hre
     const chainId = await getChainId()
 
-    const waitBlockConfirmations = VERIFICATION_BLOCK_CONFIRMATIONS
+    const waitBlockConfirmations = !developmentChains.includes(network.name)
+        ? VERIFICATION_BLOCK_CONFIRMATIONS
+        : 1
 
     log("----------------------------------------------------")
+    log(`Deploying Nft on ${network.name}/${chainId}`)
 
     let args: Array<Array<string>> = [
         [
@@ -24,7 +27,6 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
             "https://ipfs.io/ipfs/QmUCTXYXeL56J3vYmaTSNvgPAE3HuBZk3tLM8AeNPeJHkF",
         ],
     ]
-
     const nft = await deploy("Nft", {
         args: args,
         from: deployer,
