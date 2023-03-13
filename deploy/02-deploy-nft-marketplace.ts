@@ -6,7 +6,7 @@ const {
     VERIFICATION_BLOCK_CONFIRMATIONS,
 } = require("../helper-hardhat-config")
 const fs = require("fs")
-import { ADDRESS_LOCATION, ADDRESS_LOCATION_FRONTEND } from "../helper-hardhat-config"
+import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
 

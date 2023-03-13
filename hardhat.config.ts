@@ -7,12 +7,8 @@ import * as dotenv from "dotenv"
 dotenv.config({ path: __dirname + "/.env" })
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/asd"
-
 const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "https://mainnet.infura.io/v3/asd"
-
 const PRIVATE_KEY = process.env.PRIVATE_KEY
-// optional
-const MNEMONIC = process.env.MNEMONIC
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "lol"
 
 const config: HardhatUserConfig = {
