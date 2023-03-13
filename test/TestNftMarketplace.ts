@@ -1,8 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { assert, expect } from "chai"
 import { ethers } from "hardhat"
-import { Nft, NftMarketplace, VRFCoordinatorV2Mock } from "../typechain-types"
-import { BigNumber, ContractReceipt } from "ethers"
+import { BigNumber, ContractReceipt, Contract } from "ethers"
 
 const BASE_FEE = "250000000000000000" // 0.25 is this the premium in LINK?
 const GAS_PRICE_LINK = 1e9 // link per gas, is this the gas lane? // 0.000000001 LINK per gas
@@ -15,11 +14,11 @@ describe("Marketplace tests", () => {
         addr1: SignerWithAddress,
         subscriptionId: number,
         nft,
-        hardhatNft: Nft,
+        hardhatNft: Contract,
         vrfCoordinatorV2Mock,
-        hardhatVrfCoordinatorV2Mock: VRFCoordinatorV2Mock,
+        hardhatVrfCoordinatorV2Mock: Contract,
         nftmarketplace,
-        hardhatNftmarketplace: NftMarketplace
+        hardhatNftmarketplace: Contract
 
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()
@@ -92,11 +91,11 @@ describe("Pre-existing Nft tests", () => {
         addr1: SignerWithAddress,
         subscriptionId: number,
         nft,
-        hardhatNft: Nft,
+        hardhatNft: Contract,
         vrfCoordinatorV2Mock,
-        hardhatVrfCoordinatorV2Mock: VRFCoordinatorV2Mock,
+        hardhatVrfCoordinatorV2Mock: Contract,
         nftmarketplace,
-        hardhatNftmarketplace: NftMarketplace
+        hardhatNftmarketplace: Contract
 
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()

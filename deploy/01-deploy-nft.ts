@@ -1,4 +1,3 @@
-import { ethers } from "hardhat"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import {
     developmentChains,
@@ -35,7 +34,7 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     log("----------------------------------------------------")
     updateContractAddress("Nft", nft.address)
 
-    if (!developmentChains.includes(networkConfig[chainId].name)) {
+    if (!developmentChains.includes(networkConfig[chainId as keyof typeof networkConfig].name)) {
         await verify(nft.address, args)
     }
 }

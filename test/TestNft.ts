@@ -1,12 +1,10 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
-import { assert, expect } from "chai"
+import { assert } from "chai"
 import { ethers } from "hardhat"
-import { Nft } from "../typechain-types"
-import { BigNumber } from "ethers"
-import { token } from "../typechain-types/@openzeppelin/contracts"
+import { Contract } from "ethers"
 
 describe("Nft minting tests", () => {
-    let owner: SignerWithAddress, addr1: SignerWithAddress, nft, hardhatNft: Nft
+    let owner: SignerWithAddress, addr1: SignerWithAddress, nft, hardhatNft: Contract
 
     const firstIndex = 0
     const secondIndex = 1
@@ -15,7 +13,6 @@ describe("Nft minting tests", () => {
         ;[owner, addr1] = await ethers.getSigners()
 
         nft = await ethers.getContractFactory("Nft")
-
         hardhatNft = await nft.deploy(["cat1", "cat2", "cat3"])
         await hardhatNft.deployed()
     })
