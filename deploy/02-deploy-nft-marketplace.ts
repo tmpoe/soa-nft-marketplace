@@ -6,7 +6,7 @@ const {
     VERIFICATION_BLOCK_CONFIRMATIONS,
 } = require("../helper-hardhat-config")
 const fs = require("fs")
-import { addressLocations } from "../helper-hardhat-config"
+import { ADDRESS_LOCATION, ADDRESS_LOCATION_FRONTEND } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
 
@@ -22,7 +22,7 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
         : 1
     const chainId = await getChainId()
 
-    const contractAddresses = JSON.parse(fs.readFileSync(addressLocations, "utf8"))
+    const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
     const nativeNftAddress = contractAddresses[chainId]["Nft"].at(-1)
 
     let vrfCoordinatorV2Address = networkConfig[chainId].vrfCoordinatorV2

@@ -22,7 +22,9 @@ const networkConfig = {
 }
 const DECIMALS = 8
 const INITIAL_PRICE = 3034715771688
-const addressLocations: string = "./constants/addresses.json"
+const ADDRESS_LOCATION: string = "./constants/addresses.json"
+const ADDRESS_LOCATION_FRONTEND: string =
+    "../soa-nft-marketplace-frontend/constants/addresses.json"
 const VERIFICATION_BLOCK_CONFIRMATIONS = 6
 const developmentChains = ["hardhat", "localhost"]
 
@@ -30,7 +32,8 @@ export {
     networkConfig,
     VERIFICATION_BLOCK_CONFIRMATIONS,
     developmentChains,
-    addressLocations,
+    ADDRESS_LOCATION,
+    ADDRESS_LOCATION_FRONTEND,
     DECIMALS,
     INITIAL_PRICE,
 }
