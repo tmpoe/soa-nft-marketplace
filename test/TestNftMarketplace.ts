@@ -277,6 +277,26 @@ describe("Pre-existing Nft tests", () => {
         assert.isTrue(ownerEndEth > ownerStartEth)
     })
 
+    it("does not allow to list for unapproved contract", async () => {
+        hardhatNft.setApprovalForAll(hardhatNftmarketplace.address, false)
+        expect(
+            await hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        ).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__NotApprovedForMarketplace"
+        )
+    })
+
+    it("does not allow to buy listed nft item for seller", async () => {
+        hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
+        await expect(
+            hardhatNftmarketplace.buyNft(0, hardhatNft.address, { value: PRICE })
+        ).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__SellerCannotBeBuyer"
+        )
+    })
+
     it("does not allow to buy listed nft item with incorrect send value", async () => {
         hardhatNftmarketplace.listNft(0, hardhatNft.address, PRICE)
         await expect(
