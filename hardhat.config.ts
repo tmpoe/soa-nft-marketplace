@@ -7,7 +7,9 @@ import * as dotenv from "dotenv"
 dotenv.config({ path: __dirname + "/.env" })
 
 const SEPOLIA_RPC_URL =
-    process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/64559bcccfe64f5899d0cb9c829af086"
+    process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/asd"
+
+const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "https://mainnet.infura.io/v3/asd"
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 // optional
@@ -19,9 +21,9 @@ const config: HardhatUserConfig = {
     networks: {
         hardhat: {
             // // If you want to do some forking, uncomment this
-            // forking: {
-            //   url: MAINNET_RPC_URL
-            // }
+             forking: {
+               url: MAINNET_RPC_URL
+             }
             chainId: 31337,
         },
         localhost: {
