@@ -50,19 +50,19 @@ Users can list NFTs for dollars (?).
 
 Stack:
 
-- typescript
-- hardhat - eth dev tool
-- openzeppelin - smart contracts
-- chainlink - oracles
-- node - server
-- yarn - package mgr
-- nextjs - frontend base
-- the graph or moralis (more material) - event indexing
-- web3uikit - web3 specific frontend
-- tailwind - CSS
-- slither, solc select - security
-- solidity linter
-- git - 2 repos (front, back)
+  - typescript
+  - hardhat - eth dev tool
+  - openzeppelin - smart contracts
+  - chainlink - oracles
+  - node - server
+  - yarn - package mgr
+  - nextjs - frontend base
+  - the graph or moralis (more material) - event indexing
+  - web3uikit - web3 specific frontend
+  - tailwind - CSS
+  - slither, solc select - security
+  - solidity linter
+  - git - 2 repos (front, back)
 
 Reference: https://github.com/smartcontractkit/full-blockchain-solidity-course-js
 
