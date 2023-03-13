@@ -9,17 +9,17 @@ const FUND_AMOUNT = "1000000000000000000000"
 const CALLBACK_GAS_LIMIT = "500000"
 const PRICE = ethers.utils.parseEther("0.1")
 
-describe("Marketplace tests", () => {
-    let owner: SignerWithAddress,
-        addr1: SignerWithAddress,
-        subscriptionId: number,
-        nft,
-        hardhatNft: Contract,
-        vrfCoordinatorV2Mock,
-        hardhatVrfCoordinatorV2Mock: Contract,
-        nftmarketplace,
-        hardhatNftmarketplace: Contract
+let owner: SignerWithAddress,
+    addr1: SignerWithAddress,
+    subscriptionId: number,
+    nft,
+    hardhatNft: Contract,
+    vrfCoordinatorV2Mock,
+    hardhatVrfCoordinatorV2Mock: Contract,
+    nftmarketplace,
+    hardhatNftmarketplace: Contract
 
+describe("Marketplace tests", () => {
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()
 
@@ -87,16 +87,6 @@ describe("Marketplace tests", () => {
 })
 
 describe("Pre-existing Nft tests", () => {
-    let owner: SignerWithAddress,
-        addr1: SignerWithAddress,
-        subscriptionId: number,
-        nft,
-        hardhatNft: Contract,
-        vrfCoordinatorV2Mock,
-        hardhatVrfCoordinatorV2Mock: Contract,
-        nftmarketplace,
-        hardhatNftmarketplace: Contract
-
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()
 
