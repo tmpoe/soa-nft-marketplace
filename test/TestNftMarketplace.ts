@@ -274,7 +274,7 @@ describe("Pre-existing Nft tests", () => {
         assert.isTrue((await hardhatNft.ownerOf(0)) === addr1.address)
         await hardhatNftmarketplace.withdrawProceedings()
         const ownerEndEth = await ethers.provider.getBalance(owner.address)
-        assert.isTrue(ownerEndEth > ownerStartEth)
+        assert.isTrue(ownerEndEth.toBigInt() > ownerStartEth.toBigInt())
     })
 
     it("does not allow to list for unapproved contract", async () => {
