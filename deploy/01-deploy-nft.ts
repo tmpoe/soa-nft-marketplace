@@ -22,9 +22,9 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
 
     let args: Array<Array<string>> = [
         [
-            "https://ipfs.io/ipfs/QmZjgbNwQLFmbvoKdBRUjYZSGGY1dnuZCzYDg34Vk79vRs",
-            "https://ipfs.io/ipfs/QmadRJjCCH55pm9xhkA3VGhMDhNspnjxoZGxifjEivdQua",
-            "https://ipfs.io/ipfs/QmUCTXYXeL56J3vYmaTSNvgPAE3HuBZk3tLM8AeNPeJHkF",
+            "ipfs://QmZjgbNwQLFmbvoKdBRUjYZSGGY1dnuZCzYDg34Vk79vRs",
+            "ipfs://QmadRJjCCH55pm9xhkA3VGhMDhNspnjxoZGxifjEivdQua",
+            "ipfs://QmUCTXYXeL56J3vYmaTSNvgPAE3HuBZk3tLM8AeNPeJHkF",
         ],
     ]
     const nft = await deploy("Nft", {
