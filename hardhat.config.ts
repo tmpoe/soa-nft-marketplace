@@ -10,6 +10,8 @@ const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.i
 const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "https://mainnet.infura.io/v3/asd"
 const PRIVATE_KEY = process.env.PRIVATE_KEY
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "lol"
+const PINATA_API_KEY = process.env.PINATA_API_KEY || "api"
+const PINATA_API_SECRET = process.env.PINATA_API_SECRET || "secret"
 
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
@@ -61,3 +63,5 @@ const config: HardhatUserConfig = {
     },
 }
 export default config
+
+export { PINATA_API_KEY, PINATA_API_SECRET }

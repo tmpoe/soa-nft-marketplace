@@ -3,9 +3,15 @@ import {
     developmentChains,
     networkConfig,
     VERIFICATION_BLOCK_CONFIRMATIONS,
+    UPLOAD_TO_IPFS,
+    IPFS_IMAGE_HASH_LOCATION,
+    IPFS_METADATA_HASH_LOCATION,
 } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
+import { tokenMetadata } from "../types/token"
+import { uploadImagesToIPFS, pinMetadataToPinata } from "../utils/pinToPinata"
+import fs from "fs"
 
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
@@ -17,16 +23,49 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
         ? VERIFICATION_BLOCK_CONFIRMATIONS
         : 1
 
+    if (UPLOAD_TO_IPFS) {
+        const responses = await uploadImagesToIPFS()
+
+        for (const index in responses) {
+            if (!responses[index].IpfsHash) {
+                throw Error("At least one of the ipfs uploads failed!")
+            }
+        }
+    }
+    let imageHashes = JSON.parse(fs.readFileSync(IPFS_IMAGE_HASH_LOCATION, "utf8"))
+
+    if (UPLOAD_TO_IPFS) {
+        for (const name in imageHashes) {
+            const metadata: tokenMetadata = {
+                name: name,
+                imageLocation: imageHashes[name],
+                description: "It is a cat",
+                attributes: [
+                    {
+                        trait_type: "eye_color",
+                        value: "blue",
+                    },
+                    {
+                        trait_type: "playfulness",
+                        value: 32,
+                    },
+                ],
+            }
+            const response = await pinMetadataToPinata(metadata)
+            if (!response) {
+                throw Error("Metadata upload failed!")
+            }
+        }
+    }
+    let tokenMetadataHashes: Array<string> = []
+    const metadatas = JSON.parse(fs.readFileSync(IPFS_METADATA_HASH_LOCATION, "utf8"))
+    for (const name in metadatas) {
+        tokenMetadataHashes.push(metadatas[name])
+    }
     log("----------------------------------------------------")
     log(`Deploying Nft on ${network.name}/${chainId}`)
 
-    let args: Array<Array<string>> = [
-        [
-            "ipfs://QmZjgbNwQLFmbvoKdBRUjYZSGGY1dnuZCzYDg34Vk79vRs",
-            "ipfs://QmadRJjCCH55pm9xhkA3VGhMDhNspnjxoZGxifjEivdQua",
-            "ipfs://QmUCTXYXeL56J3vYmaTSNvgPAE3HuBZk3tLM8AeNPeJHkF",
-        ],
-    ]
+    let args: Array<Array<string>> = [tokenMetadataHashes]
     const nft = await deploy("Nft", {
         args: args,
         from: deployer,

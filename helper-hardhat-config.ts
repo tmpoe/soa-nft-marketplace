@@ -27,6 +27,10 @@ const ADDRESS_LOCATION_FRONTEND: string =
     "../soa-nft-marketplace-frontend/constants/addresses.json"
 const VERIFICATION_BLOCK_CONFIRMATIONS = 6
 const developmentChains = ["hardhat", "localhost"]
+const IPFS_IMAGE_HASH_LOCATION = "./constants/ipfs_image_hashes.json"
+const IPFS_METADATA_HASH_LOCATION = "./constants/ipfs_metadata_hashes.json"
+const IMAGE_PATH = "./images"
+const UPLOAD_TO_IPFS = false
 
 export {
     networkConfig,
@@ -36,4 +40,8 @@ export {
     ADDRESS_LOCATION_FRONTEND,
     DECIMALS,
     INITIAL_PRICE,
+    IPFS_IMAGE_HASH_LOCATION,
+    IPFS_METADATA_HASH_LOCATION,
+    UPLOAD_TO_IPFS,
+    IMAGE_PATH,
 }
