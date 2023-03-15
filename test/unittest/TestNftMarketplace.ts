@@ -74,7 +74,7 @@ describe("Pre-existing Nft tests", () => {
 
         nftmarketplace = await ethers.getContractFactory("NftMarketplace")
         hardhatNftmarketplace = await nftmarketplace.deploy(hardhatNft.address, 1)
-        hardhatNftmarketplace.deployed()
+        await hardhatNftmarketplace.deployed()
 
         const fee = await hardhatNftmarketplace.getMintingFee()
         const requestNftResponse = await hardhatNftmarketplace.requestNft("cat1", {

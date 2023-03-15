@@ -29,12 +29,13 @@ const { network, getChainId } = hre
     : describe("Full mint nft integration tests", () => {
           beforeEach(async () => {
               const chainId = await getChainId()
+              /*
               const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
 
               const catAttributesAddress = contractAddresses[chainId]["NftCatAttributes"].at(-1)
               const nativeNftAddress = contractAddresses[chainId]["Nft"].at(-1)
               const nftMarketplaceAddress = contractAddresses[chainId]["NftMarketplace"].at(-1)
-
+              */
               ;[owner, addr1] = await ethers.getSigners()
               vrfCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
               hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(
@@ -52,19 +53,33 @@ const { network, getChainId } = hre
               await hardhatVrfCoordinatorV2Mock.fundSubscription(subscriptionId, FUND_AMOUNT, {
                   from: owner.address,
               })
-
               nftCatAttributes = await ethers.getContractFactory("NftCatAttributes")
+              const gasLane = ethers.constants.HashZero
 
-              hardhatNftCatAttributes = nftCatAttributes.attach(catAttributesAddress)
+              //hardhatNftCatAttributes = await nftCatAttributes.attach(catAttributesAddress)
+
+              hardhatNftCatAttributes = await nftCatAttributes.deploy(
+                  hardhatVrfCoordinatorV2Mock.address,
+                  subscriptionId,
+                  gasLane,
+                  CALLBACK_GAS_LIMIT
+              )
 
               await hardhatVrfCoordinatorV2Mock.addConsumer(
                   subscriptionId,
                   hardhatNftCatAttributes.address
               )
+
               nft = await ethers.getContractFactory("Nft")
-              hardhatNft = await nft.attach(nativeNftAddress)
-              nftMarketplace = await ethers.getContractFactory("NftCatAttributes")
-              hardhatNftmarketplace = await nftMarketplace.attach(nftMarketplaceAddress)
+              //hardhatNft = await nft.attach(nativeNftAddress)
+              hardhatNft = await nft.deploy()
+
+              await hardhatNft.deployed()
+              nftMarketplace = await ethers.getContractFactory("NftMarketplace")
+              //hardhatNftmarketplace = await nftMarketplace.attach(nftMarketplaceAddress)
+
+              hardhatNftmarketplace = await nftMarketplace.deploy(hardhatNft.address, 1)
+              await hardhatNftmarketplace.deployed()
           })
 
           it("Can mint a fully functional nft", async () => {
@@ -84,10 +99,16 @@ const { network, getChainId } = hre
                                   event
                               )
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
-                              console.log(jumbledUpAttributes)
-                              expect(hardhatNftmarketplace.requestNft(jumbledUpAttributes))
+                              const mintFee = await hardhatNftmarketplace.getMintingFee()
+                              expect(
+                                  await hardhatNftmarketplace.requestNft(jumbledUpAttributes, {
+                                      value: mintFee,
+                                  })
+                              )
                                   .to.emit(hardhatNftmarketplace, "NftMinted")
                                   .withArgs(owner.address)
+
+                              assert.equal(await hardhatNft.tokenURI(0), jumbledUpAttributes)
 
                               resolve()
                           } catch (e) {
@@ -100,7 +121,6 @@ const { network, getChainId } = hre
                       let requestNftResponse = await hardhatNftCatAttributes.requestCatAttributes()
 
                       let requestNftReceipt = await requestNftResponse.wait(1)
-                      console.log(requestNftReceipt)
                       await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
                           requestNftReceipt.events![1].args!.requestId,
                           hardhatNftCatAttributes.address

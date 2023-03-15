@@ -11,11 +11,15 @@ contract Nft is ERC721URIStorage {
 
     constructor() ERC721("MyToken", "MTK") {}
 
-    function mint(address owner, string memory tokenUri) public payable returns (uint256 tokenId) {
+    function mint(address owner, string memory tokenUriToSet)
+        public
+        payable
+        returns (uint256 tokenId)
+    {
         tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(owner, tokenId);
-        _setTokenURI(tokenId, tokenUri);
+        _setTokenURI(tokenId, tokenUriToSet);
         return tokenId;
     }
 
