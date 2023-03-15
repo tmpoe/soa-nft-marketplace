@@ -6,9 +6,6 @@ import { Contract } from "ethers"
 describe("Nft minting tests", () => {
     let owner: SignerWithAddress, addr1: SignerWithAddress, nft, hardhatNft: Contract
 
-    const firstIndex = 0
-    const secondIndex = 1
-
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()
 

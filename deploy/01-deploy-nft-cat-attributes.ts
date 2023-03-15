@@ -1,9 +1,7 @@
 import { ethers } from "hardhat"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
-const fs = require("fs")
 import {
     networkConfig,
     developmentChains,
