@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "./Nft.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -17,13 +15,7 @@ error NftMarketplace__NotApprovedForMarketplace();
 error NftMarketplace__SellerCannotBeBuyer();
 error NftMarketplace__NoProceedingsToWithdraw(address);
 
-contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
-    enum Breed {
-        Ragdoll,
-        Sphynx,
-        Persian
-    }
-
+contract NftMarketplace is Ownable, ReentrancyGuard {
     struct Listing {
         uint256 price;
         address seller;
@@ -31,10 +23,6 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
 
     uint256 immutable i_mintingFee;
 
-    VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
-    uint64 private immutable i_subscriptionId;
-    bytes32 private immutable i_gasLane;
-    uint32 private immutable i_callbackGasLimit;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
@@ -44,8 +32,7 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
 
     mapping(address => uint256) private s_proceedings;
 
-    event NftRequested(uint256 requestId, address requester);
-    event NftMinted(address owner, Breed breed);
+    event NftMinted(address owner);
     event NftListed(uint256 nftId, address owner, uint256 price, address ierc721TokenAddress);
     event NftSold(address owner, uint256 nftId, address ierc721TokenAddress, uint256 price);
     event NftListingUpdated(
@@ -56,45 +43,18 @@ contract NftMarketplace is Ownable, VRFConsumerBaseV2, ReentrancyGuard {
     );
     event NftListingCancelled(uint256 nftId, address owner, address ierc721TokenAddress);
 
-    constructor(
-        address nftContractAddress,
-        uint256 mintingFee,
-        address vrfCoordinatorV2,
-        uint64 subscriptionId,
-        bytes32 gasLane,
-        uint32 callbackGasLimit
-    ) VRFConsumerBaseV2(vrfCoordinatorV2) {
-        i_mintingFee = mintingFee;
-        i_subscriptionId = subscriptionId;
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
-        i_gasLane = gasLane;
-        i_callbackGasLimit = callbackGasLimit;
+    constructor(address nftContractAddress, uint256 mintingFee) {
         nftContract = Nft(nftContractAddress);
+        i_mintingFee = mintingFee;
     }
 
-    function requestNft() public payable returns (uint256 requestId) {
+    function requestNft(string memory ipfsHash) external payable {
         if (msg.value < i_mintingFee) {
             revert NftMarketplace__InsufficientFunds();
         }
-        requestId = i_vrfCoordinator.requestRandomWords(
-            i_gasLane,
-            i_subscriptionId,
-            REQUEST_CONFIRMATIONS,
-            i_callbackGasLimit,
-            NUM_WORDS
-        );
-        s_requestIdToSender[requestId] = msg.sender;
-        emit NftRequested(requestId, msg.sender);
-    }
 
-    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords)
-        internal
-        override
-    {
-        address owner = s_requestIdToSender[requestId]; // should I delete after query?
-        uint256 breed = randomWords[0] % 3;
-        nftContract.mint(breed, owner);
-        emit NftMinted(owner, Breed(breed));
+        nftContract.mint(msg.sender, ipfsHash);
+        emit NftMinted(msg.sender);
     }
 
     function buyNft(uint256 nftId, address ierc721TokenAddress)

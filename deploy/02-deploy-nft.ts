@@ -65,9 +65,8 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     log("----------------------------------------------------")
     log(`Deploying Nft on ${network.name}/${chainId}`)
 
-    let args: Array<Array<string>> = [tokenMetadataHashes]
     const nft = await deploy("Nft", {
-        args: args,
+        args: [],
         from: deployer,
         log: true,
         waitConfirmations: waitBlockConfirmations,
@@ -76,7 +75,7 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     updateContractAddress("Nft", nft.address)
 
     if (!developmentChains.includes(networkConfig[chainId as keyof typeof networkConfig].name)) {
-        await verify(nft.address, args)
+        await verify(nft.address, [])
     }
 }
 

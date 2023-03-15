@@ -13,12 +13,12 @@ describe("Nft minting tests", () => {
         ;[owner, addr1] = await ethers.getSigners()
 
         nft = await ethers.getContractFactory("Nft")
-        hardhatNft = await nft.deploy(["cat1", "cat2", "cat3"])
+        hardhatNft = await nft.deploy()
         await hardhatNft.deployed()
     })
 
     it("mints NFT after random number returned", async function () {
-        const tx = await hardhatNft.mint(0, owner.address)
+        const tx = await hardhatNft.mint(owner.address, "cat1")
         await tx.wait(1)
 
         const tokenId = tx.value
