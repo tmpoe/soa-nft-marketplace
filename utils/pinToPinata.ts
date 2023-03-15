@@ -58,7 +58,9 @@ async function pinMetadataToPinata(metadata: tokenMetadata) {
         console.log("**********************")
         console.log("Uploading metadata to IPFS")
 
-        const response = await pinata.pinJSONToIPFS(metadata)
+        const response = await pinata.pinJSONToIPFS(metadata, {
+            pinataMetadata: { name: `${metadata.name}_metadata` },
+        })
         saveIpfsHash(metadata.name, response.IpfsHash, IPFS_METADATA_HASH_LOCATION)
 
         console.log(`Upload successful: ${response.IpfsHash}`)
