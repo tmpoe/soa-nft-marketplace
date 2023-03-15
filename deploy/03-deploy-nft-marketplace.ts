@@ -9,8 +9,6 @@ import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
 
-const FUND_AMOUNT = "1000000000000000000000"
-
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
     const { network, getChainId } = hre

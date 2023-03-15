@@ -2,9 +2,11 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { assert, expect } from "chai"
 import { ethers } from "hardhat"
 const hre = require("hardhat")
-import { BigNumber, ContractReceipt, Contract } from "ethers"
-import { ADDRESS_LOCATION, networkConfig, developmentChains } from "../../helper-hardhat-config"
-const fs = require("fs")
+import { ContractReceipt, Contract } from "ethers"
+import {
+    /* ADDRESS_LOCATION, networkConfig, */ developmentChains,
+} from "../../helper-hardhat-config"
+/* const fs = require("fs") */
 
 const BASE_FEE = "250000000000000000" // 0.25 is this the premium in LINK?
 const GAS_PRICE_LINK = 1e9 // link per gas, is this the gas lane? // 0.000000001 LINK per gas
