@@ -63,16 +63,19 @@ describe("Cat attribute tests", () => {
 
     it("mints NFT after random number returned", async function () {
         await new Promise<void>(async (resolve, reject) => {
-            hardhatNftCatAttributes.once("NftCatAttributesCreated", async (event) => {
-                console.log("triggered")
-                try {
-                    console.log(event)
-                    resolve()
-                } catch (e) {
-                    console.log(e)
-                    reject(e)
+            hardhatNftCatAttributes.once(
+                "NftCatAttributesCreated",
+                async (requestId, owner, breed, color, playfulness, cuteness, event) => {
+                    console.log("triggered")
+                    try {
+                        console.log(requestId, owner, breed, color, playfulness, cuteness, event)
+                        resolve()
+                    } catch (e) {
+                        console.log(e)
+                        reject(e)
+                    }
                 }
-            })
+            )
             try {
                 let requestNftResponse = await hardhatNftCatAttributes.requestCatAttributes({})
 

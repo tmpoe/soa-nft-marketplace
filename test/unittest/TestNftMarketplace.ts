@@ -11,7 +11,6 @@ const PRICE = ethers.utils.parseEther("0.1")
 
 let owner: SignerWithAddress,
     addr1: SignerWithAddress,
-    subscriptionId: number,
     nft,
     hardhatNft: Contract,
     nftmarketplace,
