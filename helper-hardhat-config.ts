@@ -36,7 +36,7 @@ const FRONTEND_IPFS_IMAGE_HASH_LOCATION =
     "../soa-nft-marketplace-frontend/constants/ipfs_image_hashes.json"
 const IPFS_METADATA_HASH_LOCATION = "./constants/ipfs_metadata_hashes.json"
 const IMAGE_PATH = "./images"
-const UPLOAD_TO_IPFS = true
+const UPLOAD_TO_IPFS = false
 
 export {
     networkConfig,
