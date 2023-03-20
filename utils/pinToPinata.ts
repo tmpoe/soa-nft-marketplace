@@ -2,6 +2,7 @@ import pinataSDK from "@pinata/sdk"
 import { PINATA_API_KEY, PINATA_API_SECRET } from "../hardhat.config"
 import {
     IPFS_IMAGE_HASH_LOCATION,
+    FRONTEND_IPFS_IMAGE_HASH_LOCATION,
     IPFS_METADATA_HASH_LOCATION,
     IMAGE_PATH,
 } from "../helper-hardhat-config"
@@ -33,6 +34,7 @@ async function uploadImagesToIPFS() {
                 pinataMetadata: { name: imageBaseName },
             })
             saveIpfsHash(imageBaseName, response.IpfsHash, IPFS_IMAGE_HASH_LOCATION)
+            saveIpfsHash(imageBaseName, response.IpfsHash, FRONTEND_IPFS_IMAGE_HASH_LOCATION)
 
             console.log(`Upload successful: ${response.IpfsHash}`)
             console.log("**********************")

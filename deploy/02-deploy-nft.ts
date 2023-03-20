@@ -2,10 +2,12 @@ import { HardhatRuntimeEnvironment } from "hardhat/types"
 import {
     developmentChains,
     networkConfig,
+    UPLOAD_TO_IPFS,
     VERIFICATION_BLOCK_CONFIRMATIONS,
 } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
+import { uploadImagesToIPFS } from "../utils/pinToPinata"
 
 module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const { deploy, log } = hre.deployments
@@ -16,6 +18,10 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     const waitBlockConfirmations = !developmentChains.includes(network.name)
         ? VERIFICATION_BLOCK_CONFIRMATIONS
         : 1
+
+    if (UPLOAD_TO_IPFS) {
+        uploadImagesToIPFS()
+    }
 
     log("----------------------------------------------------")
     log(`Deploying Nft on ${network.name}/${chainId}`)
