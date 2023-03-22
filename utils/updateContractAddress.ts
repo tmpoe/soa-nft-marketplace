@@ -1,10 +1,10 @@
 const hre = require("hardhat")
 const fs = require("fs")
-import { ADDRESS_LOCATION, ADDRESS_LOCATION_FRONTEND } from "../helper-hardhat-config"
+import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 
 async function updateContractAddress(contractName: string, contractAddress: string) {
     const chainId = hre.network.config.chainId.toString()
-    const locationsToWriteTo = [ADDRESS_LOCATION, ADDRESS_LOCATION_FRONTEND]
+    const locationsToWriteTo = [ADDRESS_LOCATION]
 
     locationsToWriteTo.forEach(function (location) {
         console.log(location)
