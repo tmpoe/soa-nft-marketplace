@@ -90,11 +90,13 @@ describe("Cat attribute tests", () => {
                 }
             )
             try {
-                let requestNftResponse = await hardhatNftCatAttributes.requestCatAttributes({})
+                let requestNftCatAttributes = await hardhatNftCatAttributes.requestCatAttributes(
+                    {}
+                )
 
-                let requestNftReceipt = await requestNftResponse.wait(1)
+                let requestNftCatAttributesReceipt = await requestNftCatAttributes.wait(1)
                 await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
-                    requestNftReceipt.events![1].args!.requestId,
+                    requestNftCatAttributesReceipt.events![1].args!.requestId,
                     hardhatNftCatAttributes.address
                 )
             } catch (e) {

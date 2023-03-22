@@ -31,13 +31,7 @@ const { network, getChainId } = hre
     : describe("Full mint nft integration tests", () => {
           beforeEach(async () => {
               const chainId = await getChainId()
-              /*
-              const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
 
-              const catAttributesAddress = contractAddresses[chainId]["NftCatAttributes"].at(-1)
-              const nativeNftAddress = contractAddresses[chainId]["Nft"].at(-1)
-              const nftMarketplaceAddress = contractAddresses[chainId]["NftMarketplace"].at(-1)
-              */
               ;[owner, addr1] = await ethers.getSigners()
               vrfCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
               hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(
