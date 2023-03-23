@@ -6,7 +6,6 @@ participant "Fee Gatekeeper" as fee_gatekeeper <<contract>>
 participant "Cat Attributes" as cat_attributes <<contract>>
 participant "Oracle" as oracle
 participant "IPFS" as ipfs <<pinata>>
-participant "Backend" as backend
 participant "Nft Marketplace" as nft_marketplace <<contract>>
 participant "Cat Nft" as cat_nft <<contract>>
 
