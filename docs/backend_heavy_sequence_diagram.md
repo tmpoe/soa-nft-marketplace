@@ -2,8 +2,8 @@
 @startuml
 actor user
 participant Frontend as frontend
-participant "Server" as server
 participant "Fee Gatekeeper" as fee_gatekeeper <<contract>>
+participant "Server" as server
 participant "Cat Attributes" as cat_attributes <<contract>>
 participant "Oracle" as oracle
 participant "IPFS" as ipfs <<pinata>>
