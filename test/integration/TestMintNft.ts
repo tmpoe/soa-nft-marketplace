@@ -1,8 +1,8 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { assert, expect } from "chai"
 import { ethers } from "hardhat"
-const hre = require("hardhat")
-import { ContractReceipt, Contract } from "ethers"
+import { network, getChainId } from "hardhat"
+import { ContractReceipt, Contract, ContractFactory } from "ethers"
 import {
     /* ADDRESS_LOCATION, networkConfig, */ developmentChains,
 } from "../../helper-hardhat-config"
@@ -16,22 +16,19 @@ const CALLBACK_GAS_LIMIT = "500000"
 let owner: SignerWithAddress,
     addr1: SignerWithAddress,
     subscriptionId: number,
-    nftCatAttributes,
+    nftCatAttributes: ContractFactory,
     hardhatNftCatAttributes: Contract,
-    vrfCoordinatorV2Mock,
+    vrfCoordinatorV2Mock: ContractFactory,
     hardhatVrfCoordinatorV2Mock: Contract,
-    nft,
+    nft: ContractFactory,
     hardhatNft: Contract,
-    nftMarketplace,
+    nftMarketplace: ContractFactory,
     hardhatNftmarketplace: Contract
 
-const { network, getChainId } = hre
 !developmentChains.includes(network.name)
     ? console.log("Not dev chain")
     : describe("Full mint nft integration tests", () => {
           beforeEach(async () => {
-              const chainId = await getChainId()
-
               ;[owner, addr1] = await ethers.getSigners()
               vrfCoordinatorV2Mock = await ethers.getContractFactory("VRFCoordinatorV2Mock")
               hardhatVrfCoordinatorV2Mock = await vrfCoordinatorV2Mock.deploy(
