@@ -1,17 +1,18 @@
 import { ethers, getChainId } from "hardhat"
-import { ADDRESS_LOCATION } from "../helper-hardhat-config"
-import fs from "fs"
+import ChainData from "../utils/ChainData"
+import { chainConfig, networkConfig } from "../helper-hardhat-config"
 
 async function mintNft(address: string) {
     const chainId = await getChainId()
+    const chainData = new ChainData()
 
-    const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
-    const nftCatAttributesAddress = contractAddresses[chainId]["NftCatAttributes"].at(-1)
+    requestCatAttributes(chainData, chainId)
+}
 
-    const nftCatAttributes = await ethers.getContractAt(
-        "NftCatAttributes",
-        nftCatAttributesAddress
-    )
+async function requestCatAttributes(chainData: ChainData, chainId: string) {
+    const chain: chainConfig = networkConfig[chainId as keyof typeof networkConfig]
+    const nftCatAttributeAddress = chainData[chain.name]
+    const nftCatAttributes = await ethers.getContractAt("NftCatAttributes", nftCatAttributeAddress)
 
     await nftCatAttributes.requestCatAttributes()
     console.log("Cat attributes successfully requested")
