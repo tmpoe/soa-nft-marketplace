@@ -1,11 +1,22 @@
 import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 import fs from "fs"
-import { Chain } from "../types/adresses"
+
+class DeployedContractAddresses {
+    addresses: Array<string>
+
+    constructor(addresses: Array<string>) {
+        this.addresses = addresses
+    }
+
+    getLatestAddress(): string {
+        return this.addresses.at(-1)!
+    }
+}
 
 class ChainData {
-    hardhat: Chain
-    localhost: Chain
-    sepolia: Chain
+    hardhat: DeployedContractAddresses
+    localhost: DeployedContractAddresses
+    sepolia: DeployedContractAddresses
 
     constructor() {
         const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))

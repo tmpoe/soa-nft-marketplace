@@ -11,7 +11,7 @@ async function mintNft(address: string) {
 
 async function requestCatAttributes(chainData: ChainData, chainId: string) {
     const chain: chainConfig = networkConfig[chainId as keyof typeof networkConfig]
-    const nftCatAttributeAddress = chainData[chain.name]
+    const nftCatAttributeAddress: string = chainData[chain.name].getLatestAddress()
     const nftCatAttributes = await ethers.getContractAt("NftCatAttributes", nftCatAttributeAddress)
 
     await nftCatAttributes.requestCatAttributes()
