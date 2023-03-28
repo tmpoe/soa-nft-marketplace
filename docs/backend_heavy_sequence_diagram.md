@@ -5,6 +5,7 @@ participant Frontend as frontend
 participant "Fee Gatekeeper" as fee_gatekeeper <<contract>>
 participant "Server" as server
 participant "Cat Attributes" as cat_attributes <<contract>>
+participant "Graph" as graph
 participant "Oracle" as oracle
 participant "IPFS" as ipfs <<pinata>>
 participant "Nft Marketplace" as nft_marketplace <<contract>>
@@ -27,15 +28,18 @@ alt If fund transfer fails
 end
 
 server -> cat_attributes : request cat attributes
-cat_attributes -> oracle : request random numbers
+cat_attributes --> oracle : request random numbers
+
 oracle --> cat_attributes : send random numbers
+cat_attributes --> graph : cat attributes created
 
 server -> IPFS : upload metadata
 IPFS --> server : IPFS hash
 
 ' No error handling here for now
 server -> nft_marketplace : request mint with IPFS hash
-nft_marketplace --> server : success
+nft_marketplace --> graph : nft minted
+server --> graph : nft minted
 server --> frontend : nft minted
 frontend --> user : new nft
 
