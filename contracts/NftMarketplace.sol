@@ -48,11 +48,13 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         i_mintingFee = mintingFee;
     }
 
-    function requestNft(string memory ipfsHash) external payable {
+    function gatekeep() external payable {
         if (msg.value < i_mintingFee) {
             revert NftMarketplace__InsufficientFunds();
         }
+    }
 
+    function requestNft(string memory ipfsHash) external onlyOwner {
         nftContract.mint(msg.sender, ipfsHash);
         emit NftMinted(msg.sender);
     }

@@ -92,11 +92,8 @@ let owner: SignerWithAddress,
                                   event
                               )
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
-                              const mintFee = await hardhatNftmarketplace.getMintingFee()
                               expect(
-                                  await hardhatNftmarketplace.requestNft(jumbledUpAttributes, {
-                                      value: mintFee,
-                                  })
+                                  await hardhatNftmarketplace.requestNft(jumbledUpAttributes, {})
                               )
                                   .to.emit(hardhatNftmarketplace, "NftMinted")
                                   .withArgs(owner.address)
