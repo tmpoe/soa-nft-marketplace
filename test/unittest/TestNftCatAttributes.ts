@@ -55,10 +55,10 @@ describe("Cat attribute tests", () => {
             .withArgs(0, owner.address)
     })
 
-    it("allows anyone to request", async () => {
-        expect(await hardhatNftCatAttributes.connect(addr1).requestCatAttributes())
-            .to.emit(hardhatNftCatAttributes, "NftCatAttributesRequested")
-            .withArgs(0, owner.address)
+    it("allows only owner to request", async () => {
+        await expect(
+            hardhatNftCatAttributes.connect(addr1).requestCatAttributes()
+        ).to.be.revertedWith("Ownable: caller is not the owner")
     })
 
     it("mints NFT after random number returned", async function () {

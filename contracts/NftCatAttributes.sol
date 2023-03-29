@@ -2,8 +2,9 @@
 pragma solidity ^0.8.9;
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NftCatAttributes is VRFConsumerBaseV2 {
+contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
     enum Breed {
         Ragdoll,
         Sphynx,
@@ -49,7 +50,7 @@ contract NftCatAttributes is VRFConsumerBaseV2 {
         i_callbackGasLimit = callbackGasLimit;
     }
 
-    function requestCatAttributes() external returns (uint256 requestId) {
+    function requestCatAttributes() external onlyOwner returns (uint256 requestId) {
         requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
