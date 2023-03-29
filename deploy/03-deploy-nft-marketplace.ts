@@ -3,6 +3,7 @@ import {
     networkConfig,
     developmentChains,
     VERIFICATION_BLOCK_CONFIRMATIONS,
+    MINT_PRICE,
 } from "../helper-hardhat-config"
 const fs = require("fs")
 import { ADDRESS_LOCATION } from "../helper-hardhat-config"
@@ -24,7 +25,7 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
 
     log("----------------------------------------------------")
     log(`Deploying NftMarketplace on ${network.name}/${chainId}`)
-    let args = [nativeNftAddress, "10000"]
+    let args = [nativeNftAddress, MINT_PRICE]
 
     const nftMarketplace = await deploy("NftMarketplace", {
         args: args,

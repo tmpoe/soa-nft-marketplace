@@ -13,10 +13,22 @@ class DeployedContractAddresses {
     }
 }
 
+class DeployedContracts {
+    nftCatAttributes: DeployedContractAddresses
+    nftMarketplace: DeployedContractAddresses
+    nft: DeployedContractAddresses
+
+    constructor(contractAddresses: any) {
+        this.nftCatAttributes = contractAddresses["NftCatAttributes"]
+        this.nftMarketplace = contractAddresses["NftMarketplace"]
+        this.nft = contractAddresses["Nft"]
+    }
+}
+
 class ChainData {
-    hardhat: DeployedContractAddresses
-    localhost: DeployedContractAddresses
-    sepolia: DeployedContractAddresses
+    hardhat: DeployedContracts
+    localhost: DeployedContracts
+    sepolia: DeployedContracts
 
     constructor() {
         const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))

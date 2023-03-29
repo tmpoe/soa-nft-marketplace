@@ -1,17 +1,21 @@
 import { ethers, getChainId } from "hardhat"
 import ChainData from "../utils/ChainData"
-import { chainConfig, networkConfig } from "../helper-hardhat-config"
+import { ChainConfig, networkConfig, DEPLOYER_ADDRESS } from "../helper-hardhat-config"
 
 async function mintNft(address: string) {
     const chainId = await getChainId()
     const chainData = new ChainData()
+    const chain: ChainConfig = networkConfig[chainId as keyof typeof networkConfig]
 
-    requestCatAttributes(chainData, chainId)
+    const nftMarketplaceAddress: string = chainData[chain.name].nftMarketplace.getLatestAddress()
+    const nftMarketplace = await ethers.getContractAt("NftCatAttributes", nftMarketplaceAddress)
+
+    const owner = requestCatAttributes(chainData, chain)
 }
 
-async function requestCatAttributes(chainData: ChainData, chainId: string) {
-    const chain: chainConfig = networkConfig[chainId as keyof typeof networkConfig]
-    const nftCatAttributeAddress: string = chainData[chain.name].getLatestAddress()
+async function requestCatAttributes(chainData: ChainData, chain: ChainConfig) {
+    const nftCatAttributeAddress: string =
+        chainData[chain.name].nftCatAttributes.getLatestAddress()
     const nftCatAttributes = await ethers.getContractAt("NftCatAttributes", nftCatAttributeAddress)
 
     await nftCatAttributes.requestCatAttributes()

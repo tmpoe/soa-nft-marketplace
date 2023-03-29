@@ -1,4 +1,6 @@
-type chainConfig = {
+import { ethers } from "hardhat"
+
+type ChainConfig = {
     name: "hardhat" | "localhost" | "sepolia"
     subscriptionId: string | undefined
     vrfCoordinatorV2: string | undefined
@@ -7,7 +9,7 @@ type chainConfig = {
     callbackGasLimit: string
 }
 
-const default_config: chainConfig = {
+const default_config: ChainConfig = {
     name: "hardhat",
     subscriptionId: undefined,
     vrfCoordinatorV2: undefined,
@@ -16,7 +18,7 @@ const default_config: chainConfig = {
     callbackGasLimit: "500000", // 500,000 gas
 }
 
-const localhost_config: chainConfig = {
+const localhost_config: ChainConfig = {
     name: "localhost",
     subscriptionId: undefined,
     vrfCoordinatorV2: undefined,
@@ -25,7 +27,7 @@ const localhost_config: chainConfig = {
     callbackGasLimit: "500000", // 500,000 gas
 }
 
-const sepolia_config: chainConfig = {
+const sepolia_config: ChainConfig = {
     name: "sepolia",
     subscriptionId: "415",
     gasLane: "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c", // 30 gwei
@@ -52,6 +54,8 @@ const FRONTEND_IPFS_IMAGE_HASH_LOCATION =
 const IPFS_METADATA_HASH_LOCATION = "./constants/ipfs_metadata_hashes.json"
 const IMAGE_PATH = "./images"
 const UPLOAD_TO_IPFS = false
+const MINT_PRICE = ethers.utils.parseEther("0.01")
+const DEPLOYER_ADDRESS = "0xC75444ef801b50f5601230db66F784e2078BE7Bb"
 
 export {
     networkConfig,
@@ -66,5 +70,7 @@ export {
     IPFS_METADATA_HASH_LOCATION,
     UPLOAD_TO_IPFS,
     IMAGE_PATH,
-    chainConfig,
+    ChainConfig,
+    MINT_PRICE,
+    DEPLOYER_ADDRESS,
 }
