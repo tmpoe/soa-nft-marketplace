@@ -32,7 +32,8 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
 
     mapping(address => uint256) private s_proceedings;
 
-    event NftMinted(address owner);
+    event NftRequested(address requester);
+    event NftMinted(address owner, uint256 tokenId);
     event NftListed(uint256 nftId, address owner, uint256 price, address ierc721TokenAddress);
     event NftSold(address owner, uint256 nftId, address ierc721TokenAddress, uint256 price);
     event NftListingUpdated(
@@ -52,11 +53,12 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         if (msg.value < i_mintingFee) {
             revert NftMarketplace__InsufficientFunds();
         }
+        emit NftRequested(msg.sender);
     }
 
-    function requestNft(string memory ipfsHash) external onlyOwner {
-        nftContract.mint(msg.sender, ipfsHash);
-        emit NftMinted(msg.sender);
+    function mintNft(string memory ipfsHash, address owner) external onlyOwner {
+        uint256 tokenId = nftContract.mint(owner, ipfsHash);
+        emit NftMinted(owner, tokenId);
     }
 
     function buyNft(uint256 nftId, address ierc721TokenAddress)

@@ -82,21 +82,15 @@ let owner: SignerWithAddress,
                       async (requestId, owner, breed, color, playfulness, cuteness, event) => {
                           console.log("triggered")
                           try {
-                              console.log(
-                                  requestId,
-                                  owner,
-                                  breed,
-                                  color,
-                                  playfulness,
-                                  cuteness,
-                                  event
-                              )
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
                               expect(
-                                  await hardhatNftmarketplace.requestNft(jumbledUpAttributes, {})
+                                  await hardhatNftmarketplace.mintNft(
+                                      jumbledUpAttributes,
+                                      owner.address
+                                  )
                               )
                                   .to.emit(hardhatNftmarketplace, "NftMinted")
-                                  .withArgs(owner.address)
+                                  .withArgs(owner.address, 0)
 
                               assert.equal(await hardhatNft.tokenURI(0), jumbledUpAttributes)
 
@@ -108,11 +102,11 @@ let owner: SignerWithAddress,
                       }
                   )
                   try {
-                      let requestNftResponse = await hardhatNftCatAttributes.requestCatAttributes()
+                      let mintNftResponse = await hardhatNftCatAttributes.requestCatAttributes()
 
-                      let requestNftReceipt = await requestNftResponse.wait(1)
+                      let mintNftReceipt = await mintNftResponse.wait(1)
                       await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
-                          requestNftReceipt.events![1].args!.requestId,
+                          mintNftReceipt.events![1].args!.requestId,
                           hardhatNftCatAttributes.address
                       )
                   } catch (e) {

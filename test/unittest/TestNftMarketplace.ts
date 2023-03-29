@@ -29,23 +29,19 @@ describe("Marketplace tests", () => {
     it("is requestable to mint", async () => {
         const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
 
-        await expect(
-            hardhatNftmarketplace.requestNft("cat1", {
-                from: owner.address,
-            })
-        )
+        await expect(hardhatNftmarketplace.mintNft("cat1", owner.address))
             .to.emit(hardhatNftmarketplace, "NftMinted")
-            .withArgs(owner.address)
+            .withArgs(owner.address, 0)
     })
 
     it("allows only the owner to request", async () => {
         const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
-        await expect(hardhatNftmarketplace.requestNft("cat1"))
+        await expect(hardhatNftmarketplace.mintNft("cat1", owner.address))
             .to.emit(hardhatNftmarketplace, "NftMinted")
-            .withArgs(owner.address)
-        await expect(hardhatNftmarketplace.connect(addr1).requestNft("cat2")).to.be.revertedWith(
-            "Ownable: caller is not the owner"
-        )
+            .withArgs(owner.address, 0)
+        await expect(
+            hardhatNftmarketplace.connect(addr1).mintNft("cat2", addr1.address)
+        ).to.be.revertedWith("Ownable: caller is not the owner")
     })
 
     it("fails to mint in case of insufficient funds", async () => {
@@ -70,8 +66,8 @@ describe("Pre-existing Nft tests", () => {
         await hardhatNftmarketplace.deployed()
 
         const fee = await hardhatNftmarketplace.getMintingFee()
-        const requestNftResponse = await hardhatNftmarketplace.requestNft("cat1", {})
-        const requestNftReceipt = await requestNftResponse.wait(1)
+        const mintNftResponse = await hardhatNftmarketplace.mintNft("cat1", owner.address)
+        await mintNftResponse.wait(1)
 
         await hardhatNft.approve(hardhatNftmarketplace.address, 0)
         const tokenCounter = await hardhatNft.getTokenCounter()

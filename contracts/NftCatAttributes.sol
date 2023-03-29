@@ -50,7 +50,7 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         i_callbackGasLimit = callbackGasLimit;
     }
 
-    function requestCatAttributes() external onlyOwner returns (uint256 requestId) {
+    function requestCatAttributes(address owner) external onlyOwner returns (uint256 requestId) {
         requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
@@ -58,8 +58,8 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
             i_callbackGasLimit,
             NUM_WORDS
         );
-        s_requestIdToSender[requestId] = msg.sender;
-        emit NftCatAttributesRequested(requestId, msg.sender);
+        s_requestIdToSender[requestId] = owner;
+        emit NftCatAttributesRequested(requestId, owner);
     }
 
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords)

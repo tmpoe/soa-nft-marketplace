@@ -50,14 +50,14 @@ describe("Cat attribute tests", () => {
     })
 
     it("Emits an event on attribute request", async () => {
-        expect(await hardhatNftCatAttributes.requestCatAttributes())
+        expect(await hardhatNftCatAttributes.requestCatAttributes(owner.address))
             .to.emit(hardhatNftCatAttributes, "NftCatAttributesRequested")
             .withArgs(0, owner.address)
     })
 
     it("allows only owner to request", async () => {
         await expect(
-            hardhatNftCatAttributes.connect(addr1).requestCatAttributes()
+            hardhatNftCatAttributes.connect(addr1).requestCatAttributes(addr1.address)
         ).to.be.revertedWith("Ownable: caller is not the owner")
     })
 
@@ -82,13 +82,13 @@ describe("Cat attribute tests", () => {
                 }
             )
             try {
-                let requestNftCatAttributes = await hardhatNftCatAttributes.requestCatAttributes(
-                    {}
+                let mintNftCatAttributes = await hardhatNftCatAttributes.requestCatAttributes(
+                    owner.address
                 )
 
-                let requestNftCatAttributesReceipt = await requestNftCatAttributes.wait(1)
+                let mintNftCatAttributesReceipt = await mintNftCatAttributes.wait(1)
                 await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
-                    requestNftCatAttributesReceipt.events![1].args!.requestId,
+                    mintNftCatAttributesReceipt.events![1].args!.requestId,
                     hardhatNftCatAttributes.address
                 )
             } catch (e) {
