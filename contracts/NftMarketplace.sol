@@ -5,6 +5,7 @@ import "./Nft.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+error NftMarketplace__InsufficientFunds();
 error NftMarketplace__IncorrectPrice();
 error NftMarketplace__Unauthorized();
 error NftMarketplace__NoPriceSetForListing();
@@ -19,6 +20,8 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         uint256 price;
         address seller;
     }
+
+    uint256 immutable i_mintingFee;
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -40,11 +43,16 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
     );
     event NftListingCancelled(uint256 nftId, address owner, address ierc721TokenAddress);
 
-    constructor(address nftContractAddress) {
+    constructor(address nftContractAddress, uint256 mintingFee) {
         nftContract = Nft(nftContractAddress);
+        i_mintingFee = mintingFee;
     }
 
     function requestNft(string memory ipfsHash) external payable {
+        if (msg.value < i_mintingFee) {
+            revert NftMarketplace__InsufficientFunds();
+        }
+
         nftContract.mint(msg.sender, ipfsHash);
         emit NftMinted(msg.sender);
     }
@@ -127,6 +135,10 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
     {
         delete s_listings[ierc721TokenAddress][nftId];
         emit NftListingCancelled(nftId, msg.sender, ierc721TokenAddress);
+    }
+
+    function getMintingFee() public view returns (uint256) {
+        return i_mintingFee;
     }
 
     modifier isOwner(uint256 nftId, address ierc721TokenAddress) {
