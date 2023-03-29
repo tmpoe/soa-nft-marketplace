@@ -71,7 +71,7 @@ let owner: SignerWithAddress,
               nftMarketplace = await ethers.getContractFactory("NftMarketplace")
               //hardhatNftmarketplace = await nftMarketplace.attach(nftMarketplaceAddress)
 
-              hardhatNftmarketplace = await nftMarketplace.deploy(hardhatNft.address)
+              hardhatNftmarketplace = await nftMarketplace.deploy(hardhatNft.address, 1)
               await hardhatNftmarketplace.deployed()
           })
 
@@ -82,8 +82,22 @@ let owner: SignerWithAddress,
                       async (requestId, owner, breed, color, playfulness, cuteness, event) => {
                           console.log("triggered")
                           try {
+                              console.log(
+                                  requestId,
+                                  owner,
+                                  breed,
+                                  color,
+                                  playfulness,
+                                  cuteness,
+                                  event
+                              )
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
-                              expect(await hardhatNftmarketplace.requestNft(jumbledUpAttributes))
+                              const mintFee = await hardhatNftmarketplace.getMintingFee()
+                              expect(
+                                  await hardhatNftmarketplace.requestNft(jumbledUpAttributes, {
+                                      value: mintFee,
+                                  })
+                              )
                                   .to.emit(hardhatNftmarketplace, "NftMinted")
                                   .withArgs(owner.address)
 

@@ -68,13 +68,21 @@ describe("Cat attribute tests", () => {
                 async (requestId, owner_address, breed, color, playfulness, cuteness, event) => {
                     console.log("triggered")
                     try {
+                        console.log(
+                            requestId,
+                            owner_address,
+                            breed,
+                            color,
+                            playfulness,
+                            cuteness,
+                            event
+                        )
                         assert.notEqual(requestId, undefined)
                         assert.equal(owner.address, owner_address)
                         assert.notEqual(breed, undefined)
                         assert.notEqual(color, undefined)
                         assert.notEqual(playfulness, undefined)
                         assert.notEqual(cuteness, undefined)
-                        resolve()
                     } catch (e) {
                         console.log(e)
                         reject(e)

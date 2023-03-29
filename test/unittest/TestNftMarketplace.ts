@@ -22,13 +22,16 @@ describe("Marketplace tests", () => {
         await hardhatNft.deployed()
 
         nftmarketplace = await ethers.getContractFactory("NftMarketplace")
-        hardhatNftmarketplace = await nftmarketplace.deploy(hardhatNft.address)
+        hardhatNftmarketplace = await nftmarketplace.deploy(hardhatNft.address, 1)
         hardhatNftmarketplace.deployed()
     })
 
     it("is requestable to mint", async () => {
+        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
+
         await expect(
             hardhatNftmarketplace.requestNft("cat1", {
+                value: fee.toString(),
                 from: owner.address,
             })
         )
@@ -37,12 +40,22 @@ describe("Marketplace tests", () => {
     })
 
     it("allows anyone to request", async () => {
-        await expect(hardhatNftmarketplace.requestNft("cat1"))
+        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
+        await expect(hardhatNftmarketplace.requestNft("cat1", { value: fee.toString() }))
             .to.emit(hardhatNftmarketplace, "NftMinted")
             .withArgs(owner.address)
-        await expect(hardhatNftmarketplace.connect(addr1).requestNft("cat2"))
+        await expect(
+            hardhatNftmarketplace.connect(addr1).requestNft("cat2", { value: fee.toString() })
+        )
             .to.emit(hardhatNftmarketplace, "NftMinted")
             .withArgs(addr1.address)
+    })
+
+    it("fails to mint in case of insufficient funds", async () => {
+        await expect(hardhatNftmarketplace.requestNft("cat1")).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__InsufficientFunds"
+        )
     })
 })
 
@@ -56,10 +69,13 @@ describe("Pre-existing Nft tests", () => {
         await hardhatNft.deployed()
 
         nftmarketplace = await ethers.getContractFactory("NftMarketplace")
-        hardhatNftmarketplace = await nftmarketplace.deploy(hardhatNft.address)
+        hardhatNftmarketplace = await nftmarketplace.deploy(hardhatNft.address, 1)
         await hardhatNftmarketplace.deployed()
 
-        const requestNftResponse = await hardhatNftmarketplace.requestNft("cat1")
+        const fee = await hardhatNftmarketplace.getMintingFee()
+        const requestNftResponse = await hardhatNftmarketplace.requestNft("cat1", {
+            value: fee.toString(),
+        })
         const requestNftReceipt = await requestNftResponse.wait(1)
 
         await hardhatNft.approve(hardhatNftmarketplace.address, 0)
