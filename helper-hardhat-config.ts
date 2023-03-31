@@ -1,7 +1,7 @@
 import { ethers } from "hardhat"
 
 type ChainConfig = {
-    name: "hardhat" | "localhost" | "sepolia"
+    name: "hardhat" | "localhost" | "sepolia" | "goerli"
     subscriptionId: string | undefined
     vrfCoordinatorV2: string | undefined
     gasLane: string
@@ -36,10 +36,20 @@ const sepolia_config: ChainConfig = {
     vrfCoordinatorV2: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
 }
 
+const goerli_config: ChainConfig = {
+    name: "goerli",
+    subscriptionId: "415",
+    gasLane: "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c", // 30 gwei
+    keepersUpdateInterval: "30",
+    callbackGasLimit: "500000",
+    vrfCoordinatorV2: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
+}
+
 const networkConfig = {
     default: default_config,
     31337: localhost_config,
     11155111: sepolia_config,
+    5: goerli_config,
 }
 const DECIMALS = 8
 const INITIAL_PRICE = 3034715771688

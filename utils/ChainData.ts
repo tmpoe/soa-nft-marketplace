@@ -29,12 +29,14 @@ class ChainData {
     hardhat: DeployedContracts
     localhost: DeployedContracts
     sepolia: DeployedContracts
+    goerli: DeployedContracts
 
     constructor() {
         const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
         this.localhost = contractAddresses[31337]
         this.sepolia = contractAddresses[11155111]
         this.hardhat = contractAddresses[10000]
+        this.goerli = contractAddresses[5]
     }
 }
 
