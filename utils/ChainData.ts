@@ -14,14 +14,16 @@ class DeployedContractAddresses {
 }
 
 class DeployedContracts {
-    nftCatAttributes: DeployedContractAddresses
-    nftMarketplace: DeployedContractAddresses
-    nft: DeployedContractAddresses
+    NftCatAttributes: DeployedContractAddresses
+    NftMarketplace: DeployedContractAddresses
+    Nft: DeployedContractAddresses
 
     constructor(contractAddresses: any) {
-        this.nftCatAttributes = contractAddresses["NftCatAttributes"]
-        this.nftMarketplace = contractAddresses["NftMarketplace"]
-        this.nft = contractAddresses["Nft"]
+        this.NftCatAttributes = new DeployedContractAddresses(
+            contractAddresses["NftCatAttributes"]
+        )
+        this.NftMarketplace = new DeployedContractAddresses(contractAddresses["NftMarketplace"])
+        this.Nft = new DeployedContractAddresses(contractAddresses["Nft"])
     }
 }
 
@@ -34,11 +36,12 @@ class ChainData {
 
     constructor() {
         const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
-        this.localhost = contractAddresses[31337]
-        this.sepolia = contractAddresses[11155111]
-        this.hardhat = contractAddresses[10000]
-        this.goerli = contractAddresses[5]
-        this.ganache = contractAddresses[5777]
+
+        this.localhost = new DeployedContracts(contractAddresses[31337])
+        this.sepolia = new DeployedContracts(contractAddresses[11155111])
+        this.hardhat = new DeployedContracts(contractAddresses[10000])
+        this.goerli = new DeployedContracts(contractAddresses[5])
+        this.ganache = new DeployedContracts(contractAddresses[5777])
     }
 }
 
