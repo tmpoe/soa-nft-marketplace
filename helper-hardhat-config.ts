@@ -1,7 +1,7 @@
 import { ethers } from "hardhat"
 
 type ChainConfig = {
-    name: "hardhat" | "localhost" | "sepolia" | "goerli"
+    name: "hardhat" | "localhost" | "sepolia" | "goerli" | "ganache"
     subscriptionId: string | undefined
     vrfCoordinatorV2: string | undefined
     gasLane: string
@@ -11,6 +11,15 @@ type ChainConfig = {
 
 const default_config: ChainConfig = {
     name: "hardhat",
+    subscriptionId: undefined,
+    vrfCoordinatorV2: undefined,
+    gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc", // 30 gwei
+    keepersUpdateInterval: "30",
+    callbackGasLimit: "500000", // 500,000 gas
+}
+
+const ganache_config: ChainConfig = {
+    name: "ganache",
     subscriptionId: undefined,
     vrfCoordinatorV2: undefined,
     gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc", // 30 gwei
@@ -50,6 +59,7 @@ const networkConfig = {
     31337: localhost_config,
     11155111: sepolia_config,
     5: goerli_config,
+    5777: ganache_config,
 }
 const DECIMALS = 8
 const INITIAL_PRICE = 3034715771688
@@ -57,7 +67,7 @@ const ADDRESS_LOCATION: string = "./constants/addresses.json"
 const ADDRESS_LOCATION_FRONTEND: string =
     "../soa-nft-marketplace-frontend/constants/addresses.json"
 const VERIFICATION_BLOCK_CONFIRMATIONS = 6
-const developmentChains = ["hardhat", "localhost"]
+const developmentChains = ["hardhat", "localhost", "ganache"]
 const IPFS_IMAGE_HASH_LOCATION = "./constants/ipfs_image_hashes.json"
 const FRONTEND_IPFS_IMAGE_HASH_LOCATION =
     "../soa-nft-marketplace-frontend/constants/ipfs_image_hashes.json"

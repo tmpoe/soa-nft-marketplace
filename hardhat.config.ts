@@ -13,7 +13,9 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "lol"
 const PINATA_API_KEY = process.env.PINATA_API_KEY || "api"
 const PINATA_API_SECRET = process.env.PINATA_API_SECRET || "secret"
-
+const GANACHE_URL = process.env.GANACHE_URL || ""
+const GANACHE_PRIVATE_KEY =
+    process.env.GANACHE_PRIVATE_KEY !== undefined ? [process.env.GANACHE_PRIVATE_KEY] : []
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     networks: {
@@ -35,6 +37,11 @@ const config: HardhatUserConfig = {
             //   },
             saveDeployments: true,
             chainId: 5,
+        },
+        ganache: {
+            url: GANACHE_URL,
+            accounts: GANACHE_PRIVATE_KEY,
+            chainId: 5777,
         },
         sepolia: {
             url: SEPOLIA_RPC_URL,

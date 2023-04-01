@@ -8,8 +8,9 @@ import {
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
 import { uploadImagesToIPFS } from "../utils/pinToPinata"
+import { DeployFunction } from "hardhat-deploy/types"
 
-module.exports = async (hre: HardhatRuntimeEnvironment) => {
+const deployNft: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deploy, log } = hre.deployments
     const { network, getChainId } = hre
     const { deployer } = await hre.getNamedAccounts()
@@ -40,4 +41,5 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     }
 }
 
-module.exports.tags = ["all", "nft"]
+export default deployNft
+deployNft.tags = ["all", "mocks", "main"]

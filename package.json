@@ -28,6 +28,7 @@
     "chai": "^4.2.0",
     "dotenv": "^16.0.3",
     "ethers": "^5.4.7",
+    "ganache": "^7.7.7",
     "hardhat-deploy": "^0.11.25",
     "hardhat-gas-reporter": "^1.0.8",
     "solidity-coverage": "^0.8.2",

@@ -7,10 +7,11 @@ import {
     developmentChains,
     VERIFICATION_BLOCK_CONFIRMATIONS,
 } from "../helper-hardhat-config"
+import { DeployFunction } from "hardhat-deploy/types"
 
 const FUND_AMOUNT = "1000000000000000000000"
 
-module.exports = async (hre: HardhatRuntimeEnvironment) => {
+const deployNftCatAttributes: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deploy, log } = hre.deployments
     const { network, getChainId } = hre
     const { deployer } = await hre.getNamedAccounts()
@@ -35,8 +36,8 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     }
 
     log("----------------------------------------------------")
-    log(`Deploying NftCatAttributes on ${network.name}/${chainId}`)
-
+    log(`Deploying NftCatAttributes on ${network.name}/${chainId} from ${deployer}`)
+    log(`Available funds ${await ethers.provider.getBalance(deployer)}`)
     const args = [
         vrfCoordinatorV2Address,
         subscriptionId,
@@ -57,3 +58,5 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
         await verify(catNftAttributes.address, args)
     }
 }
+export default deployNftCatAttributes
+deployNftCatAttributes.tags = ["all", "mocks", "main"]

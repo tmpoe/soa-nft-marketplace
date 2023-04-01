@@ -9,8 +9,9 @@ const fs = require("fs")
 import { ADDRESS_LOCATION } from "../helper-hardhat-config"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
+import { DeployFunction } from "hardhat-deploy/types"
 
-module.exports = async (hre: HardhatRuntimeEnvironment) => {
+const deployNftMarketplace: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const { deploy, log } = hre.deployments
     const { network, getChainId } = hre
     const { deployer } = await hre.getNamedAccounts()
@@ -40,4 +41,5 @@ module.exports = async (hre: HardhatRuntimeEnvironment) => {
     }
 }
 
-module.exports.tags = ["all", "nftMarketplace"]
+export default deployNftMarketplace
+deployNftMarketplace.tags = ["all", "nftMarketplace"]
