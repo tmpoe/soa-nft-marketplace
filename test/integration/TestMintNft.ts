@@ -83,14 +83,12 @@ let owner: SignerWithAddress,
                           console.log("triggered")
                           try {
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
+                              console.log(owner)
                               expect(
-                                  await hardhatNftmarketplace.mintNft(
-                                      jumbledUpAttributes,
-                                      owner.address
-                                  )
+                                  await hardhatNftmarketplace.mintNft(jumbledUpAttributes, owner)
                               )
                                   .to.emit(hardhatNftmarketplace, "NftMinted")
-                                  .withArgs(owner.address, 0)
+                                  .withArgs(owner, 0)
 
                               assert.equal(await hardhatNft.tokenURI(0), jumbledUpAttributes)
 
@@ -102,13 +100,14 @@ let owner: SignerWithAddress,
                       }
                   )
                   try {
-                      let mintNftResponse = await hardhatNftCatAttributes.requestCatAttributes()
-
-                      let mintNftReceipt = await mintNftResponse.wait(1)
-                      await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
-                          mintNftReceipt.events![1].args!.requestId,
+                      console.log(owner.address)
+                      let tx = await hardhatNftCatAttributes.requestCatAttributes(owner.address)
+                      let receipt = await tx.wait(1)
+                      tx = await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
+                          receipt.events![1].args!.requestId,
                           hardhatNftCatAttributes.address
                       )
+                      const rec = await tx.wait()
                   } catch (e) {
                       console.log(e)
                       reject(e)
