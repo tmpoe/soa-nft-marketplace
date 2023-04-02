@@ -59,7 +59,7 @@ const networkConfig = {
     31337: localhost_config,
     11155111: sepolia_config,
     5: goerli_config,
-    5777: ganache_config,
+    1337: ganache_config,
 }
 const DECIMALS = 8
 const INITIAL_PRICE = 3034715771688

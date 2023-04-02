@@ -36,12 +36,11 @@ class ChainData {
 
     constructor() {
         const contractAddresses = JSON.parse(fs.readFileSync(ADDRESS_LOCATION, "utf8"))
-
         this.localhost = new DeployedContracts(contractAddresses[31337])
         this.sepolia = new DeployedContracts(contractAddresses[11155111])
         this.hardhat = new DeployedContracts(contractAddresses[10000])
         this.goerli = new DeployedContracts(contractAddresses[5])
-        this.ganache = new DeployedContracts(contractAddresses[5777])
+        this.ganache = new DeployedContracts(contractAddresses[1337])
     }
 }
 

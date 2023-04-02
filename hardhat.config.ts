@@ -41,7 +41,9 @@ const config: HardhatUserConfig = {
         ganache: {
             url: GANACHE_URL,
             accounts: GANACHE_PRIVATE_KEY,
-            chainId: 5777,
+            chainId: 1337,
+            gas: 2100000,
+            gasPrice: 8000000000,
         },
         sepolia: {
             url: SEPOLIA_RPC_URL,
