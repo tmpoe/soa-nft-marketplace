@@ -52,6 +52,10 @@ const deployNftCatAttributes: DeployFunction = async function (hre: HardhatRunti
         log: true,
         waitConfirmations: waitBlockConfirmations,
     })
+    if (developmentChains.includes(network.name)) {
+        const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
+        await vrfCoordinatorV2Mock.addConsumer(subscriptionId, catNftAttributes.address)
+    }
 
     log("----------------------------------------------------")
     updateContractAddress("NftCatAttributes", catNftAttributes.address)
