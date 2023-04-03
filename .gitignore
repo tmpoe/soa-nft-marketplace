@@ -128,3 +128,4 @@ artifacts
 
 .DS_Store
 deployments
+graph_utils/data
