@@ -1,3 +1,4 @@
+import { ethers } from "hardhat"
 import { developmentChains } from "../helper-hardhat-config"
 import { DeployFunction } from "hardhat-deploy/types"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
@@ -13,7 +14,8 @@ const deployMocks: DeployFunction = async function (hre: HardhatRuntimeEnvironme
 
     if (developmentChains.includes(network.name)) {
         log("----------------------------------------------------")
-        log(`Deploying Mocks on ${network.name}/${chainId}`)
+        log(`Deploying Mocks on ${network.name}/${chainId} from ${deployer}`)
+        log(`Available funds ${await ethers.provider.getBalance(deployer)}`)
         await deploy("VRFCoordinatorV2Mock", {
             from: deployer,
             log: true,

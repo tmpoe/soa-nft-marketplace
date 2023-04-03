@@ -28,6 +28,7 @@ const deployNftCatAttributes: DeployFunction = async function (hre: HardhatRunti
 
     if (developmentChains.includes(network.name)) {
         const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
+        console.log("VRFCoordinatorV2Mock ", vrfCoordinatorV2Mock.address)
         vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address
         const transactionResponse = await vrfCoordinatorV2Mock.createSubscription()
         const transactionReceipt = await transactionResponse.wait()
@@ -59,4 +60,4 @@ const deployNftCatAttributes: DeployFunction = async function (hre: HardhatRunti
     }
 }
 export default deployNftCatAttributes
-deployNftCatAttributes.tags = ["all", "mocks", "main"]
+deployNftCatAttributes.tags = ["all", "mocks", "main", "nftCatAttribute"]
