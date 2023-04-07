@@ -16,6 +16,13 @@ async function requestNftCatAttributes(network: ChainConfig["name"]) {
 
     const receipt = await tx.wait(1)
     console.log(JSON.stringify(receipt, null, 4))
+    console.log(typeof tx)
+
+    const nftCatAttributesRequestedEvent = receipt.events[1]
+    const requestId = nftCatAttributesRequestedEvent.args[0].toNumber()
+    const requester = nftCatAttributesRequestedEvent.args[1]
+
+    console.log(requestId, requester)
 }
 
 requestNftCatAttributes("localhost")
