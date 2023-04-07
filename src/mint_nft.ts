@@ -5,7 +5,6 @@ import { BigNumber, Contract } from "ethers"
 import { pinMetadataToPinata } from "../utils/pinToPinata"
 import { attribute, tokenMetadata } from "../types/token"
 import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
-import { Hexable } from "ethers/lib/utils"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
