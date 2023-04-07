@@ -66,7 +66,7 @@ describe("Cat attribute tests", () => {
             hardhatNftCatAttributes.once(
                 "NftCatAttributesCreated",
                 async (requestId, owner_address, breed, color, playfulness, cuteness, event) => {
-                    console.log("triggered")
+                    console.debug("triggered")
                     try {
                         assert.notEqual(requestId, undefined)
                         assert.equal(owner.address, owner_address)
@@ -76,7 +76,7 @@ describe("Cat attribute tests", () => {
                         assert.notEqual(cuteness, undefined)
                         resolve()
                     } catch (e) {
-                        console.log(e)
+                        console.debug(e)
                         reject(e)
                     }
                 }
@@ -92,7 +92,7 @@ describe("Cat attribute tests", () => {
                     hardhatNftCatAttributes.address
                 )
             } catch (e) {
-                console.log(e)
+                console.debug(e)
                 reject(e)
             }
         })

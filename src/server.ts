@@ -9,5 +9,5 @@ app.post("/:address", async (req, res) => {
 })
 
 app.listen(5000, () => {
-    console.log("The application is listening on port 5000!")
+    console.debug("The application is listening on port 5000!")
 })

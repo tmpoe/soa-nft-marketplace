@@ -7,7 +7,7 @@ async function requestNftCatAttributes(network: ChainConfig["name"]) {
     const { deployer } = await getNamedAccounts()
 
     const nftCatAttributesAddress: string = chainData[network].NftCatAttributes.getLatestAddress()
-    console.log(`Using nftCatAttributesAddress: ${nftCatAttributesAddress}`)
+    console.debug(`Using nftCatAttributesAddress: ${nftCatAttributesAddress}`)
     const nftCatAttributes = await ethers.getContractAt(
         "NftCatAttributes",
         nftCatAttributesAddress
@@ -15,14 +15,14 @@ async function requestNftCatAttributes(network: ChainConfig["name"]) {
     const tx = await nftCatAttributes.requestCatAttributes(deployer)
 
     const receipt = await tx.wait(1)
-    console.log(JSON.stringify(receipt, null, 4))
-    console.log(typeof tx)
+    console.debug(JSON.stringify(receipt, null, 4))
+    console.debug(typeof tx)
 
     const nftCatAttributesRequestedEvent = receipt.events[1]
     const requestId = nftCatAttributesRequestedEvent.args[0].toNumber()
     const requester = nftCatAttributesRequestedEvent.args[1]
 
-    console.log(requestId, requester)
+    console.debug(requestId, requester)
 }
 
 requestNftCatAttributes("localhost")

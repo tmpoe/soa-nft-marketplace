@@ -21,12 +21,12 @@ async function uploadImagesToIPFS() {
         const image = images[imageIndex]
         const readableStreamForImage = fs.createReadStream(`${imagesPath}/${image}`)
         try {
-            console.log("**********************")
-            console.log("Uploading image to IPFS")
+            console.debug("**********************")
+            console.debug("Uploading image to IPFS")
 
             const imageExtension = path.extname(image)
             if (![".png", ".svg", ".jpg"].includes(imageExtension)) {
-                console.log(`Trying to update non image extension: ${image}`)
+                console.debug(`Trying to update non image extension: ${image}`)
                 continue
             }
             const imageBaseName = path.basename(image, imageExtension)
@@ -36,11 +36,11 @@ async function uploadImagesToIPFS() {
             saveIpfsHash(imageBaseName, response.IpfsHash, IPFS_IMAGE_HASH_LOCATION)
             saveIpfsHash(imageBaseName, response.IpfsHash, FRONTEND_IPFS_IMAGE_HASH_LOCATION)
 
-            console.log(`Upload successful: ${response.IpfsHash}`)
-            console.log("**********************")
+            console.debug(`Upload successful: ${response.IpfsHash}`)
+            console.debug("**********************")
             responses.push(response)
         } catch (error) {
-            console.log(error)
+            console.debug(error)
         }
     }
     return responses
@@ -56,16 +56,16 @@ function saveIpfsHash(name: string, hash: string, location: string) {
 }
 
 async function pinMetadataToPinata(metadata: tokenMetadata) {
-    console.log("**********************")
-    console.log("Uploading metadata to IPFS")
+    console.debug("**********************")
+    console.debug("Uploading metadata to IPFS")
 
     const response = await pinata.pinJSONToIPFS(metadata, {
         pinataMetadata: { name: `${metadata.name}_metadata` },
     })
     saveIpfsHash(metadata.name, response.IpfsHash, IPFS_METADATA_HASH_LOCATION)
 
-    console.log(`Upload successful: ${response.IpfsHash}`)
-    console.log("**********************")
+    console.debug(`Upload successful: ${response.IpfsHash}`)
+    console.debug("**********************")
 
     return response
 }

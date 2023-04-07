@@ -26,7 +26,7 @@ let owner: SignerWithAddress,
     hardhatNftmarketplace: Contract
 
 !developmentChains.includes(network.name)
-    ? console.log("Not dev chain")
+    ? console.debug("Not dev chain")
     : describe("Full mint nft integration tests", () => {
           beforeEach(async () => {
               ;[owner, addr1] = await ethers.getSigners()
@@ -80,10 +80,10 @@ let owner: SignerWithAddress,
                   hardhatNftCatAttributes.once(
                       "NftCatAttributesCreated",
                       async (requestId, owner, breed, color, playfulness, cuteness, event) => {
-                          console.log("triggered")
+                          console.debug("triggered")
                           try {
                               const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
-                              console.log(owner)
+                              console.debug(owner)
                               expect(
                                   await hardhatNftmarketplace.mintNft(jumbledUpAttributes, owner)
                               )
@@ -94,13 +94,13 @@ let owner: SignerWithAddress,
 
                               resolve()
                           } catch (e) {
-                              console.log(e)
+                              console.debug(e)
                               reject(e)
                           }
                       }
                   )
                   try {
-                      console.log(owner.address)
+                      console.debug(owner.address)
                       let tx = await hardhatNftCatAttributes.requestCatAttributes(owner.address)
                       let receipt = await tx.wait(1)
                       tx = await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
@@ -109,7 +109,7 @@ let owner: SignerWithAddress,
                       )
                       const rec = await tx.wait()
                   } catch (e) {
-                      console.log(e)
+                      console.debug(e)
                       reject(e)
                   }
               })

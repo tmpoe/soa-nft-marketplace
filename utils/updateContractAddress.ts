@@ -7,7 +7,7 @@ async function updateContractAddress(contractName: string, contractAddress: stri
     const locationsToWriteTo = [ADDRESS_LOCATION]
 
     locationsToWriteTo.forEach(function (location) {
-        console.log(location)
+        console.debug(location)
         const contractAddresses = JSON.parse(fs.readFileSync(location, "utf8"))
         if (chainId in contractAddresses) {
             if (!contractAddresses[chainId][contractName]) {

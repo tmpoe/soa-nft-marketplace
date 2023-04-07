@@ -58,7 +58,7 @@ async function mintNft(requester: string) {
                     console.debug(rec)
                     resolve()
                 } catch (e) {
-                    console.log(e)
+                    console.debug(e)
                     reject(e)
                 }
             }
@@ -66,7 +66,7 @@ async function mintNft(requester: string) {
         try {
             await requestCatAttributes(nftCatAttributes, chainData, chain, requester)
         } catch (error) {
-            console.log(error)
+            console.debug(error)
             reject(error)
         }
     })
@@ -98,7 +98,7 @@ async function requestCatAttributes(
             console.debug(mockRec)
         }
     } catch (error) {
-        console.log(error)
+        console.debug(error)
     }
 }
 
