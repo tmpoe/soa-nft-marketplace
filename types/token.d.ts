@@ -6,8 +6,7 @@ type attribute = {
 type tokenMetadata = {
     name: string
     imageLocation: string
-    description: string
     attributes: Array<attribute>
 }
 
-export { tokenMetadata }
+export { tokenMetadata, attribute }

@@ -56,23 +56,18 @@ function saveIpfsHash(name: string, hash: string, location: string) {
 }
 
 async function pinMetadataToPinata(metadata: tokenMetadata) {
-    try {
-        console.log("**********************")
-        console.log("Uploading metadata to IPFS")
+    console.log("**********************")
+    console.log("Uploading metadata to IPFS")
 
-        const response = await pinata.pinJSONToIPFS(metadata, {
-            pinataMetadata: { name: `${metadata.name}_metadata` },
-        })
-        saveIpfsHash(metadata.name, response.IpfsHash, IPFS_METADATA_HASH_LOCATION)
+    const response = await pinata.pinJSONToIPFS(metadata, {
+        pinataMetadata: { name: `${metadata.name}_metadata` },
+    })
+    saveIpfsHash(metadata.name, response.IpfsHash, IPFS_METADATA_HASH_LOCATION)
 
-        console.log(`Upload successful: ${response.IpfsHash}`)
-        console.log("**********************")
+    console.log(`Upload successful: ${response.IpfsHash}`)
+    console.log("**********************")
 
-        return response
-    } catch (error) {
-        console.log(error)
-    }
-    return null
+    return response
 }
 
 export { uploadImagesToIPFS, pinMetadataToPinata }

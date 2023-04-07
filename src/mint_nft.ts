@@ -2,6 +2,10 @@ import { ethers, getChainId } from "hardhat"
 import ChainData from "../utils/ChainData"
 import { ChainConfig, developmentChains, networkConfig } from "../helper-hardhat-config"
 import { BigNumber, Contract } from "ethers"
+import { pinMetadataToPinata } from "../utils/pinToPinata"
+import { attribute, tokenMetadata } from "../types/token"
+import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
+import { Hexable } from "ethers/lib/utils"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
@@ -17,14 +21,41 @@ async function mintNft(requester: string) {
     await new Promise<void>(async (resolve, reject) => {
         nftCatAttributes.once(
             "NftCatAttributesCreated",
-            async (requestId, owner, breed, color, playfulness, cuteness, event) => {
-                console.log("triggered")
+            async (
+                requestId: BigNumber,
+                owner: string,
+                breed: Number,
+                color: Number,
+                playfulness: BigNumber,
+                cuteness: BigNumber,
+                event
+            ) => {
                 try {
-                    const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
-                    console.log(owner)
-                    const tx = await nftMarketplace.mintNft(jumbledUpAttributes, owner)
+                    const breedName = BREED[breed as keyof typeof BREED]
+                    const attributes: Array<attribute> = [
+                        {
+                            trait_type: "breed",
+                            value: breedName,
+                        },
+                        { trait_type: "playfulness", value: playfulness.toString() },
+                        {
+                            trait_type: "eye_color",
+                            value: EYE_COLOR[breed as keyof typeof EYE_COLOR],
+                        },
+                        { trait_type: "cuteness", value: cuteness.toString() },
+                    ]
+                    const metadata: tokenMetadata = {
+                        name: owner + "_" + requestId,
+                        imageLocation:
+                            IPFS_IMAGE_HASH_LOCATIONS[
+                                breedName as keyof typeof IPFS_IMAGE_HASH_LOCATIONS
+                            ],
+                        attributes: attributes,
+                    }
+                    const response = await pinMetadataToPinata(metadata)
+                    const tx = await nftMarketplace.mintNft(response.IpfsHash, owner)
                     const rec = await tx.wait()
-                    console.log(rec)
+                    console.debug(rec)
                     resolve()
                 } catch (e) {
                     console.log(e)
@@ -49,16 +80,12 @@ async function requestCatAttributes(
 ) {
     const tx = await nftCatAttributes.requestCatAttributes(requester)
     const receipt = await tx.wait()
-    console.log(receipt)
     try {
         const nftCatAttributesRequestedEvent = receipt.events[1]
-        const requestId: BigNumber = nftCatAttributesRequestedEvent.args[0].toNumber()
-        const requester: string = nftCatAttributesRequestedEvent.args[1]
-        console.log(requestId, requester)
+
         if (developmentChains.includes(chain.name)) {
             const vrfCoordinatorV2MockAddress: string =
                 chainData[chain.name].VRFCoordinatorV2Mock.getLatestAddress()
-            console.log(vrfCoordinatorV2MockAddress)
             const vrfCoordinatorV2Mock = await ethers.getContractAt(
                 "VRFCoordinatorV2Mock",
                 vrfCoordinatorV2MockAddress
@@ -68,7 +95,7 @@ async function requestCatAttributes(
                 nftCatAttributesRequestedEvent.address
             )
             const mockRec = await mockTx.wait()
-            console.log(mockRec)
+            console.debug(mockRec)
         }
     } catch (error) {
         console.log(error)
