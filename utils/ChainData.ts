@@ -17,6 +17,7 @@ class DeployedContracts {
     NftCatAttributes: DeployedContractAddresses
     NftMarketplace: DeployedContractAddresses
     Nft: DeployedContractAddresses
+    VRFCoordinatorV2Mock: DeployedContractAddresses
 
     constructor(contractAddresses: any) {
         this.NftCatAttributes = new DeployedContractAddresses(
@@ -24,6 +25,9 @@ class DeployedContracts {
         )
         this.NftMarketplace = new DeployedContractAddresses(contractAddresses["NftMarketplace"])
         this.Nft = new DeployedContractAddresses(contractAddresses["Nft"])
+        this.VRFCoordinatorV2Mock = new DeployedContractAddresses(
+            contractAddresses["VrfCoordinatorV2Mock"]
+        )
     }
 }
 

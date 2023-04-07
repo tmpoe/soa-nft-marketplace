@@ -1,5 +1,10 @@
 {
-    "5": { "NftCatAttributes": ["dummy"], "Nft": ["dummy"], "NftMarketplace": ["dummy"] },
+    "5": {
+        "NftCatAttributes": ["dummy"],
+        "Nft": ["dummy"],
+        "NftMarketplace": ["dummy"],
+        "VrfCoordinatorV2Mock": ["dummy"]
+    },
     "1337": {
         "NftMarketplace": [
             "0x825E3aA49dc594b34527913d370A362e6b5c49c6",
@@ -28,9 +33,15 @@
             "0x4110fc691e2e5BE886941F63857DA1a390068C85",
             "0x609223d8Dfc5CeC9B11Ac03182307e6E5a08a71d",
             "0xf61D90EaA07e4aAC192522084437EA692c11D088"
-        ]
+        ],
+        "VrfCoordinatorV2Mock": ["dummy"]
     },
-    "10000": { "NftCatAttributes": ["dummy"], "Nft": ["dummy"], "NftMarketplace": ["dummy"] },
+    "10000": {
+        "NftCatAttributes": ["dummy"],
+        "Nft": ["dummy"],
+        "NftMarketplace": ["dummy"],
+        "VrfCoordinatorV2Mock": ["dummy"]
+    },
     "31337": {
         "NftCatAttributes": [
             "0x52173b6ac069619c206b9A0e75609fC92860AB2A",
@@ -64,10 +75,12 @@
             "0x04F339eC4D75Cf2833069e6e61b60eF56461CD7C",
             "0x3de00f44ce68FC56DB0e0E33aD4015C6e78eCB39",
             "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
-        ]
+        ],
+        "VrfCoordinatorV2Mock": ["dummy", "0x5fbdb2315678afecb367f032d93f642f64180aa3"]
     },
     "11155111": {
         "NftMarketplace": ["0x04ddB53D8629F5b0E1B0FE23867421118C05D9EA"],
-        "Nft": ["0x040815C75247397a7401309A8bb560a1eeaD18E3"]
+        "Nft": ["0x040815C75247397a7401309A8bb560a1eeaD18E3"],
+        "VrfCoordinatorV2Mock": ["dummy"]
     }
 }
