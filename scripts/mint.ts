@@ -7,6 +7,7 @@ async function mintNft(network: ChainConfig["name"]) {
     const { deployer } = await getNamedAccounts()
 
     const nftMarketplaceAddress = chainData[network].NftMarketplace.getLatestAddress()
+    console.log(`Using nftMarketplace address: ${nftMarketplaceAddress}`)
     const nftMarketplace = await ethers.getContractAt("NftMarketplace", nftMarketplaceAddress)
     const newTokenIdTx = await nftMarketplace.mintNft("random", deployer)
 
