@@ -5,17 +5,25 @@ import { BigNumber, Contract } from "ethers"
 import { pinMetadataToPinata } from "../utils/pinToPinata"
 import { attribute, tokenMetadata } from "../types/token"
 import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
+import NftCatAttributes from "../artifacts/contracts/NftCatAttributes.sol/NftCatAttributes.json"
+import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketplace.json"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
+    console.log("chainId", chainId)
     const chainData = new ChainData()
     const chain: ChainConfig = networkConfig[chainId as keyof typeof networkConfig]
 
     const nftMarketplaceAddress: string = chainData[chain.name].NftMarketplace.getLatestAddress()
-    const nftMarketplace = await ethers.getContractAt("NftMarketplace", nftMarketplaceAddress)
+    console.debug("nftMarketplaceAddress", nftMarketplaceAddress)
+    const nftMarketplace = await ethers.getContractAt(NftMarketplace.abi, nftMarketplaceAddress)
     const nftCatAttributeAddress: string =
         chainData[chain.name].NftCatAttributes.getLatestAddress()
-    const nftCatAttributes = await ethers.getContractAt("NftCatAttributes", nftCatAttributeAddress)
+    console.debug("nftCatAttributeAddress", nftCatAttributeAddress)
+    const nftCatAttributes = await ethers.getContractAt(
+        NftCatAttributes.abi,
+        nftCatAttributeAddress
+    )
 
     await new Promise<void>(async (resolve, reject) => {
         nftCatAttributes.once(
@@ -39,7 +47,7 @@ async function mintNft(requester: string) {
                         { trait_type: "playfulness", value: playfulness.toString() },
                         {
                             trait_type: "eye_color",
-                            value: EYE_COLOR[breed as keyof typeof EYE_COLOR],
+                            value: EYE_COLOR[color as keyof typeof EYE_COLOR],
                         },
                         { trait_type: "cuteness", value: cuteness.toString() },
                     ]
@@ -79,6 +87,7 @@ async function requestCatAttributes(
 ) {
     const tx = await nftCatAttributes.requestCatAttributes(requester)
     const receipt = await tx.wait()
+    console.debug(receipt)
     try {
         const nftCatAttributesRequestedEvent = receipt.events[1]
 
@@ -90,7 +99,7 @@ async function requestCatAttributes(
                 vrfCoordinatorV2MockAddress
             )
             const mockTx = await vrfCoordinatorV2Mock.fulfillRandomWords(
-                receipt.events![1].args!.requestId,
+                receipt.events![1].args.requestId,
                 nftCatAttributesRequestedEvent.address
             )
             const mockRec = await mockTx.wait()
