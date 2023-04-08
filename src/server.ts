@@ -4,7 +4,7 @@ import mintNft from "./mint_nft"
 const app = express()
 
 app.post("/:address", async (req, res) => {
-    await mintNft(req.params.address)
+    mintNft(req.params.address)
     res.send(`nft requested for ${req.params.address}`)
 })
 

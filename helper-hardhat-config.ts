@@ -1,5 +1,11 @@
 import { ethers } from "hardhat"
 
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/asd"
+const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL || "https://goerli.infura.io/v3/asd"
+const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "https://mainnet.infura.io/v3/asd"
+const GANACHE_URL = process.env.GANACHE_URL || ""
+const LOCALHOST_RPC_URL = process.env.LOCALHOST_RPC_URL || "http://0.0.0.0:8545/"
+
 type ChainConfig = {
     name: "hardhat" | "localhost" | "sepolia" | "goerli" | "ganache"
     subscriptionId: string | undefined
@@ -7,6 +13,7 @@ type ChainConfig = {
     gasLane: string
     keepersUpdateInterval: string
     callbackGasLimit: string
+    rpc_url: string
 }
 
 const default_config: ChainConfig = {
@@ -16,6 +23,7 @@ const default_config: ChainConfig = {
     gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc", // 30 gwei
     keepersUpdateInterval: "30",
     callbackGasLimit: "500000", // 500,000 gas
+    rpc_url: LOCALHOST_RPC_URL,
 }
 
 const ganache_config: ChainConfig = {
@@ -25,6 +33,7 @@ const ganache_config: ChainConfig = {
     gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc", // 30 gwei
     keepersUpdateInterval: "30",
     callbackGasLimit: "500000", // 500,000 gas
+    rpc_url: GANACHE_URL,
 }
 
 const localhost_config: ChainConfig = {
@@ -34,6 +43,7 @@ const localhost_config: ChainConfig = {
     gasLane: "0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc", // 30 gwei
     keepersUpdateInterval: "30",
     callbackGasLimit: "500000", // 500,000 gas
+    rpc_url: LOCALHOST_RPC_URL,
 }
 
 const sepolia_config: ChainConfig = {
@@ -43,6 +53,7 @@ const sepolia_config: ChainConfig = {
     keepersUpdateInterval: "30",
     callbackGasLimit: "500000",
     vrfCoordinatorV2: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
+    rpc_url: SEPOLIA_RPC_URL,
 }
 
 const goerli_config: ChainConfig = {
@@ -52,6 +63,7 @@ const goerli_config: ChainConfig = {
     keepersUpdateInterval: "30",
     callbackGasLimit: "500000",
     vrfCoordinatorV2: "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625",
+    rpc_url: GOERLI_RPC_URL,
 }
 
 const networkConfig = {

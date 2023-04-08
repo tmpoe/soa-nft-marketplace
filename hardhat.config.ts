@@ -27,6 +27,7 @@ const config: HardhatUserConfig = {
             chainId: 31337,
         },
         localhost: {
+            url: "http://0.0.0.0:8545/",
             chainId: 31337,
         },
         goerli: {

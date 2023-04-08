@@ -10,19 +10,27 @@ import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketp
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
-    console.log("chainId", chainId)
+    console.debug("chainId", chainId)
     const chainData = new ChainData()
     const chain: ChainConfig = networkConfig[chainId as keyof typeof networkConfig]
+    console.debug("chain", chain)
+
+    let customHttpProvider = new ethers.providers.JsonRpcProvider(chain.rpc_url)
+    const signer = customHttpProvider.getSigner()
+    console.debug("customHttpProvider", customHttpProvider)
+    console.debug("blocknumber ", await customHttpProvider.getBlockNumber())
 
     const nftMarketplaceAddress: string = chainData[chain.name].NftMarketplace.getLatestAddress()
     console.debug("nftMarketplaceAddress", nftMarketplaceAddress)
-    const nftMarketplace = await ethers.getContractAt(NftMarketplace.abi, nftMarketplaceAddress)
+    const nftMarketplace = new ethers.Contract(nftMarketplaceAddress, NftMarketplace.abi, signer)
+
     const nftCatAttributeAddress: string =
         chainData[chain.name].NftCatAttributes.getLatestAddress()
     console.debug("nftCatAttributeAddress", nftCatAttributeAddress)
-    const nftCatAttributes = await ethers.getContractAt(
+    const nftCatAttributes = new ethers.Contract(
+        nftCatAttributeAddress,
         NftCatAttributes.abi,
-        nftCatAttributeAddress
+        signer
     )
 
     await new Promise<void>(async (resolve, reject) => {
