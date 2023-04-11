@@ -1,4 +1,5 @@
 import { ethers, getChainId, deployments } from "hardhat"
+import "hardhat-deploy"
 import ChainData from "../utils/ChainData"
 import { ChainConfig, developmentChains, networkConfig } from "../helper-hardhat-config"
 import { BigNumber, Contract } from "ethers"
@@ -103,8 +104,11 @@ async function requestCatAttributes(
         const signer = provider.getSigner()
 
         if (developmentChains.includes(chain.name)) {
+            console.log(deployments)
+            const vrfCoordinatorV2MockAddress: string =
+                chainData[chain.name].VRFCoordinatorV2Mock.getLatestAddress()
             const vrfCoordinatorV2Mock = VRFCoordinatorV2Mock__factory.connect(
-                "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+                vrfCoordinatorV2MockAddress,
                 signer
             )
             const mockTx = await vrfCoordinatorV2Mock.fulfillRandomWords(
