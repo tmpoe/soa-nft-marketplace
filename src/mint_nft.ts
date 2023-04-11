@@ -114,12 +114,12 @@ async function requestCatAttributes(
                 nftCatAttributesRequestedEvent.address
             )
             const mockRec = await mockTx.wait()
-            console.debug(mockRec)
 
             const nftAddress = chainData[chain.name].Nft.getLatestAddress()
             const nft = ERC721__factory.connect(nftAddress, provider)
 
             console.log(await nft.balanceOf(requester))
+            console.log(await nft.tokenURI(0))
         }
     } catch (error) {
         console.debug(error)

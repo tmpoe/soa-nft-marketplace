@@ -37,6 +37,7 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
     event NftCatAttributesCreated(
         uint256 requestId,
         uint256 tokenId,
+        string url,
         address requester,
         Breed breed,
         Color eyecolor,
@@ -81,11 +82,16 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         uint256 playfulness = randomWords[2] % 100;
         uint256 cuteness = randomWords[3] % 100;
 
-        uint256 tokenId = i_nft.mint(owner, "http://someurl.com/");
+        string memory url = string(
+            string.concat("http://someurl.com/", bytes(Strings.toString(breedIndex)))
+        );
+
+        uint256 tokenId = i_nft.mint(owner, url);
 
         emit NftCatAttributesCreated(
             requestId,
             tokenId,
+            url,
             owner,
             Breed(breedIndex),
             Color(eyeColorIndex),
