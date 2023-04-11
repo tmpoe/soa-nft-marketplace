@@ -4,7 +4,7 @@ const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.i
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL || "https://goerli.infura.io/v3/asd"
 const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "https://mainnet.infura.io/v3/asd"
 const GANACHE_URL = process.env.GANACHE_URL || ""
-const LOCALHOST_RPC_URL = process.env.LOCALHOST_RPC_URL || "http://0.0.0.0:8545/"
+const LOCALHOST_RPC_URL = process.env.LOCALHOST_RPC_URL || "http://127.0.0.1:8545/"
 
 type ChainConfig = {
     name: "hardhat" | "localhost" | "sepolia" | "goerli" | "ganache"

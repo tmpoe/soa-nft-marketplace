@@ -7,6 +7,7 @@ import { attribute, tokenMetadata } from "../types/token"
 import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
 import NftCatAttributes from "../artifacts/contracts/NftCatAttributes.sol/NftCatAttributes.json"
 import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketplace.json"
+import { ERC721__factory, VRFCoordinatorV2Mock__factory } from "../typechain-types"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
@@ -98,20 +99,27 @@ async function requestCatAttributes(
     console.debug(receipt)
     try {
         const nftCatAttributesRequestedEvent = receipt.events[1]
+        const provider = new ethers.providers.JsonRpcProvider(chain.rpc_url)
+        const signer = provider.getSigner()
 
         if (developmentChains.includes(chain.name)) {
             const vrfCoordinatorV2MockAddress: string =
                 chainData[chain.name].VRFCoordinatorV2Mock.getLatestAddress()
-            const vrfCoordinatorV2Mock = await ethers.getContractAt(
-                "VRFCoordinatorV2Mock",
-                vrfCoordinatorV2MockAddress
+            const vrfCoordinatorV2Mock = VRFCoordinatorV2Mock__factory.connect(
+                vrfCoordinatorV2MockAddress,
+                signer
             )
             const mockTx = await vrfCoordinatorV2Mock.fulfillRandomWords(
                 receipt.events![1].args.requestId,
                 nftCatAttributesRequestedEvent.address
             )
             const mockRec = await mockTx.wait()
-            console.debug(mockRec)
+
+            const nftAddress = chainData[chain.name].Nft.getLatestAddress()
+            const nft = ERC721__factory.connect(nftAddress, provider)
+
+            console.log(await nft.balanceOf(requester))
+            console.log(await nft.tokenURI(0))
         }
     } catch (error) {
         console.debug(error)

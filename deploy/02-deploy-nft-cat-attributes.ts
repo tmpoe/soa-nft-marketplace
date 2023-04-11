@@ -1,4 +1,4 @@
-import { ethers } from "hardhat"
+import { deployments, ethers } from "hardhat"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { updateContractAddress } from "../utils/updateContractAddress"
 import { verify } from "../utils/verify"
@@ -39,11 +39,14 @@ const deployNftCatAttributes: DeployFunction = async function (hre: HardhatRunti
     log("----------------------------------------------------")
     log(`Deploying NftCatAttributes on ${network.name}/${chainId} from ${deployer}`)
     log(`Available funds ${await ethers.provider.getBalance(deployer)}`)
+
+    const nftDeployment = await deployments.get("Nft")
     const args = [
         vrfCoordinatorV2Address,
         subscriptionId,
         networkConfig[chainId as keyof typeof networkConfig].gasLane,
         networkConfig[chainId as keyof typeof networkConfig].callbackGasLimit,
+        nftDeployment.address,
     ]
 
     const catNftAttributes = await deploy("NftCatAttributes", {

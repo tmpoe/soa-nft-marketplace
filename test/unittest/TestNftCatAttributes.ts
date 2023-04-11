@@ -1,7 +1,8 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { assert, expect } from "chai"
-import { ethers } from "hardhat"
+import { ethers, deployments } from "hardhat"
 import { ContractReceipt, Contract } from "ethers"
+import { NftCatAttributes, NftCatAttributes__factory } from "../../typechain-types"
 
 const BASE_FEE = "250000000000000000" // 0.25 is this the premium in LINK?
 const GAS_PRICE_LINK = 1e9 // link per gas, is this the gas lane? // 0.000000001 LINK per gas
@@ -11,7 +12,8 @@ const CALLBACK_GAS_LIMIT = "500000"
 let owner: SignerWithAddress,
     addr1: SignerWithAddress,
     subscriptionId: number,
-    nftCatAttributes,
+    // Exact typings
+    nftCatAttributes: NftCatAttributes,
     hardhatNftCatAttributes: Contract,
     vrfCoordinatorV2Mock,
     hardhatVrfCoordinatorV2Mock: Contract
@@ -34,13 +36,13 @@ describe("Cat attribute tests", () => {
         })
         const gasLane = ethers.constants.HashZero
 
-        nftCatAttributes = await ethers.getContractFactory("NftCatAttributes")
+        // no need for deployment, a localnode will run for each test
+        const nftCatAttributesContract = await deployments.get("NftCatAttributes")
 
-        hardhatNftCatAttributes = await nftCatAttributes.deploy(
-            hardhatVrfCoordinatorV2Mock.address,
-            subscriptionId,
-            gasLane,
-            CALLBACK_GAS_LIMIT
+        // using factories result in typed contracts
+        nftCatAttributes = NftCatAttributes__factory.connect(
+            nftCatAttributesContract.address,
+            owner
         )
 
         await hardhatVrfCoordinatorV2Mock.addConsumer(
