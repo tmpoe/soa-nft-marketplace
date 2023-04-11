@@ -14,6 +14,6 @@ app.post("/:address", async (req, res) => {
     res.send(`nft requested for ${req.params.address}`)
 })
 
-app.listen(5000, () => {
+app.listen(4999, () => {
     console.debug("The application is listening on port 5000!")
 })

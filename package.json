@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "npx ts-node --files src/server.ts"
+    "dev": "npx ts-node --files src/server.ts",
+    "localnode": "hardhat node"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.29.3",
