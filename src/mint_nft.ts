@@ -1,5 +1,4 @@
-import { ethers, getChainId, deployments } from "hardhat"
-import "hardhat-deploy"
+import { ethers, getChainId } from "hardhat"
 import ChainData from "../utils/ChainData"
 import { ChainConfig, developmentChains, networkConfig } from "../helper-hardhat-config"
 import { BigNumber, Contract } from "ethers"
@@ -8,7 +7,7 @@ import { attribute, tokenMetadata } from "../types/token"
 import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
 import NftCatAttributes from "../artifacts/contracts/NftCatAttributes.sol/NftCatAttributes.json"
 import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketplace.json"
-import { VRFCoordinatorV2Mock__factory } from "../typechain-types"
+import { ERC721__factory, VRFCoordinatorV2Mock__factory } from "../typechain-types"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
@@ -104,7 +103,6 @@ async function requestCatAttributes(
         const signer = provider.getSigner()
 
         if (developmentChains.includes(chain.name)) {
-            console.log(deployments)
             const vrfCoordinatorV2MockAddress: string =
                 chainData[chain.name].VRFCoordinatorV2Mock.getLatestAddress()
             const vrfCoordinatorV2Mock = VRFCoordinatorV2Mock__factory.connect(
@@ -117,6 +115,11 @@ async function requestCatAttributes(
             )
             const mockRec = await mockTx.wait()
             console.debug(mockRec)
+
+            const nftAddress = chainData[chain.name].Nft.getLatestAddress()
+            const nft = ERC721__factory.connect(nftAddress, provider)
+
+            console.log(await nft.balanceOf(requester))
         }
     } catch (error) {
         console.debug(error)
