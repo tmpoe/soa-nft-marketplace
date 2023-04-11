@@ -9,7 +9,6 @@ describe("Nft minting tests", () => {
     beforeEach(async () => {
         ;[owner, addr1] = await ethers.getSigners()
 
-        //watch this
         nft = await ethers.getContractFactory("Nft")
         hardhatNft = await nft.deploy()
         await hardhatNft.deployed()
