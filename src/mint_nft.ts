@@ -1,4 +1,4 @@
-import { ethers, getChainId } from "hardhat"
+import { ethers, getChainId, deployments } from "hardhat"
 import ChainData from "../utils/ChainData"
 import { ChainConfig, developmentChains, networkConfig } from "../helper-hardhat-config"
 import { BigNumber, Contract } from "ethers"
@@ -7,6 +7,7 @@ import { attribute, tokenMetadata } from "../types/token"
 import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
 import NftCatAttributes from "../artifacts/contracts/NftCatAttributes.sol/NftCatAttributes.json"
 import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketplace.json"
+import { VRFCoordinatorV2Mock__factory } from "../typechain-types"
 
 async function mintNft(requester: string) {
     const chainId = await getChainId()
@@ -98,13 +99,13 @@ async function requestCatAttributes(
     console.debug(receipt)
     try {
         const nftCatAttributesRequestedEvent = receipt.events[1]
+        const provider = new ethers.providers.JsonRpcProvider(chain.rpc_url)
+        const signer = provider.getSigner()
 
         if (developmentChains.includes(chain.name)) {
-            const vrfCoordinatorV2MockAddress: string =
-                chainData[chain.name].VRFCoordinatorV2Mock.getLatestAddress()
-            const vrfCoordinatorV2Mock = await ethers.getContractAt(
-                "VRFCoordinatorV2Mock",
-                vrfCoordinatorV2MockAddress
+            const vrfCoordinatorV2Mock = VRFCoordinatorV2Mock__factory.connect(
+                "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+                signer
             )
             const mockTx = await vrfCoordinatorV2Mock.fulfillRandomWords(
                 receipt.events![1].args.requestId,
