@@ -1,5 +1,6 @@
 import express from "express"
 import mintNft from "./mint_nft"
+import { ethers } from "hardhat"
 
 const app = express()
 
@@ -10,6 +11,9 @@ app.use((req, res, next) => {
 })
 
 app.post("/:address", async (req, res) => {
+    if (!ethers.utils.isAddress(req.params.address)) {
+        res.status(400).send("Invalid address")
+    }
     try {
         await mintNft(req.params.address) // Todo make minting non blocking
         res.send(`nft requested for ${req.params.address}`)
