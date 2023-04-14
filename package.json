@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "dev": "npx ts-node --files src/server.ts"
+    "dev": "npx ts-node --files src/server.ts",
+    "hh-node": "yarn hardhat node --hostname 0.0.0.0"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.29.3",
     "express": "^4.18.2",
-    "hardhat": "^2.12.7",
+    "hardhat": "^2.13.0",
     "solhint": "^3.4.0"
   },
   "devDependencies": {
