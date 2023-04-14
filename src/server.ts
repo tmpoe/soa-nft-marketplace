@@ -10,8 +10,12 @@ app.use((req, res, next) => {
 })
 
 app.post("/:address", async (req, res) => {
-    mintNft(req.params.address)
-    res.send(`nft requested for ${req.params.address}`)
+    try {
+        await mintNft(req.params.address) // Todo make minting non blocking
+        res.send(`nft requested for ${req.params.address}`)
+    } catch (e) {
+        res.status(400).send(e)
+    }
 })
 
 app.listen(5000, () => {
