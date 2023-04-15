@@ -14,20 +14,15 @@ async function mintNft(requester: string) {
     console.debug("chainId", chainId)
     const chainData = new ChainData()
     const chain: ChainConfig = networkConfig[chainId as keyof typeof networkConfig]
-    console.debug("chain", chain)
 
     let customHttpProvider = new ethers.providers.JsonRpcProvider(chain.rpc_url)
     const signer = customHttpProvider.getSigner()
-    console.debug("customHttpProvider", customHttpProvider)
-    console.debug("blocknumber ", await customHttpProvider.getBlockNumber())
 
     const nftMarketplaceAddress: string = chainData[chain.name].NftMarketplace.getLatestAddress()
-    console.debug("nftMarketplaceAddress", nftMarketplaceAddress)
     const nftMarketplace = new ethers.Contract(nftMarketplaceAddress, NftMarketplace.abi, signer)
 
     const nftCatAttributeAddress: string =
         chainData[chain.name].NftCatAttributes.getLatestAddress()
-    console.debug("nftCatAttributeAddress", nftCatAttributeAddress)
     const nftCatAttributes = new ethers.Contract(
         nftCatAttributeAddress,
         NftCatAttributes.abi,
@@ -82,7 +77,7 @@ async function mintNft(requester: string) {
         try {
             await requestCatAttributes(nftCatAttributes, chainData, chain, requester)
         } catch (error) {
-            console.debug(error)
+            console.error(error)
             reject(error)
         }
     })
@@ -117,7 +112,7 @@ async function requestCatAttributes(
             console.debug(mockRec)
         }
     } catch (error) {
-        console.debug(error)
+        console.error(error)
     }
 }
 

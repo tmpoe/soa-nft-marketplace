@@ -40,7 +40,7 @@ async function uploadImagesToIPFS() {
             console.debug("**********************")
             responses.push(response)
         } catch (error) {
-            console.debug(error)
+            console.error(error)
         }
     }
     return responses
