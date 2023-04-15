@@ -10,16 +10,21 @@ app.use((req, res, next) => {
     next()
 })
 
-app.post("/:address", async (req, res) => {
+app.post("/:address", (req, res) => {
     if (!ethers.utils.isAddress(req.params.address)) {
         res.status(400).send("Invalid address")
+        //return
     }
     try {
-        await mintNft(req.params.address) // Todo make minting non blocking
+        mintNft(req.params.address) // Todo make minting non blocking
         res.send(`nft requested for ${req.params.address}`)
     } catch (e) {
-        res.status(400).send(e)
+        console.error("Requst failed")
     }
+})
+
+process.on("uncaughtException", function (err) {
+    console.error("Minting error: ", err)
 })
 
 app.listen(5000, () => {
