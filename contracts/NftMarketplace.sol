@@ -100,7 +100,7 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         uint256 nftId,
         address ierc721TokenAddress,
         uint256 price
-    ) public payable isOwner(nftId, ierc721TokenAddress) notListed(nftId, ierc721TokenAddress) {
+    ) public isOwner(nftId, ierc721TokenAddress) notListed(nftId, ierc721TokenAddress) {
         if (price <= 0) {
             revert NftMarketplace__NoPriceSetForListing();
         }
