@@ -31,14 +31,14 @@ describe("Marketplace tests", () => {
 
         await expect(hardhatNftmarketplace.mintNft("cat1", owner.address))
             .to.emit(hardhatNftmarketplace, "NftMinted")
-            .withArgs(owner.address, 0)
+            .withArgs(owner.address, 0, hardhatNft.address)
     })
 
     it("allows only the owner to request", async () => {
         const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
         await expect(hardhatNftmarketplace.mintNft("cat1", owner.address))
             .to.emit(hardhatNftmarketplace, "NftMinted")
-            .withArgs(owner.address, 0)
+            .withArgs(owner.address, 0, hardhatNft.address)
         await expect(
             hardhatNftmarketplace.connect(addr1).mintNft("cat2", addr1.address)
         ).to.be.revertedWith("Ownable: caller is not the owner")
