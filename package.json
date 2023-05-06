@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "npx ts-node --files src/server.ts",
-    "hh-node": "yarn hardhat node --hostname 0.0.0.0"
+    "hh-node": "yarn hardhat node --hostname 0.0.0.0",
+    "export-front": "yarn hardhat export --export-all /Users/admin/work/soa-nft-marketplace/soa-nft-marketplace-frontend/constants/abi/contracts.json"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.29.3",
