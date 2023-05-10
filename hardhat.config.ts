@@ -85,4 +85,4 @@ const config: HardhatUserConfig = {
 }
 export default config
 
-export { PINATA_API_KEY, PINATA_API_SECRET }
+export { PINATA_API_KEY, PINATA_API_SECRET, PRIVATE_KEY }

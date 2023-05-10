@@ -1,4 +1,4 @@
-import { ethers, getChainId, deployments } from "hardhat"
+import { ethers } from "hardhat"
 import ChainData from "../utils/ChainData"
 import { ChainConfig, developmentChains, networkConfig } from "../helper-hardhat-config"
 import { BigNumber, Contract } from "ethers"
@@ -8,25 +8,27 @@ import { BREED, EYE_COLOR, IPFS_IMAGE_HASH_LOCATIONS } from "../cat-mapping"
 import NftCatAttributes from "../artifacts/contracts/NftCatAttributes.sol/NftCatAttributes.json"
 import NftMarketplace from "../artifacts/contracts/NftMarketplace.sol/NftMarketplace.json"
 import { VRFCoordinatorV2Mock__factory } from "../typechain-types"
+import { PRIVATE_KEY } from "../hardhat.config"
 
-async function mintNft(requester: string) {
-    const chainId = await getChainId()
-    console.debug("chainId", chainId)
+async function mintNft(requester: string, chainId: number) {
+    console.log("chainId", chainId)
     const chainData = new ChainData()
     const chain: ChainConfig = networkConfig[chainId as keyof typeof networkConfig]
 
     let customHttpProvider = new ethers.providers.JsonRpcProvider(chain.rpc_url)
-    const signer = customHttpProvider.getSigner()
+    let wallet = new ethers.Wallet(PRIVATE_KEY!, customHttpProvider)
+
+    console.log("signer", wallet)
 
     const nftMarketplaceAddress: string = chainData[chain.name].NftMarketplace.getLatestAddress()
-    const nftMarketplace = new ethers.Contract(nftMarketplaceAddress, NftMarketplace.abi, signer)
+    const nftMarketplace = new ethers.Contract(nftMarketplaceAddress, NftMarketplace.abi, wallet)
 
     const nftCatAttributeAddress: string =
         chainData[chain.name].NftCatAttributes.getLatestAddress()
     const nftCatAttributes = new ethers.Contract(
         nftCatAttributeAddress,
         NftCatAttributes.abi,
-        signer
+        wallet
     )
 
     await new Promise<void>(async (resolve, reject) => {
@@ -66,15 +68,16 @@ async function mintNft(requester: string) {
                     const response = await pinMetadataToPinata(metadata)
                     const tx = await nftMarketplace.mintNft(response.IpfsHash, owner)
                     const rec = await tx.wait()
-                    console.debug(rec)
+                    console.log(rec)
                     resolve()
                 } catch (e) {
-                    console.debug(e)
+                    console.log(e)
                     reject(e)
                 }
             }
         )
         try {
+            console.log("Requesting cat attributes")
             await requestCatAttributes(nftCatAttributes, chainData, chain, requester)
         } catch (error) {
             console.error(error)
@@ -90,8 +93,9 @@ async function requestCatAttributes(
     requester: string
 ) {
     const tx = await nftCatAttributes.requestCatAttributes(requester)
+    console.log("post-request")
     const receipt = await tx.wait()
-    console.debug(receipt)
+    console.log(receipt)
     try {
         const nftCatAttributesRequestedEvent = receipt.events[1]
 
@@ -109,7 +113,7 @@ async function requestCatAttributes(
                 nftCatAttributesRequestedEvent.address
             )
             const mockRec = await mockTx.wait()
-            console.debug(mockRec)
+            console.log(mockRec)
         }
     } catch (error) {
         console.error(error)
@@ -118,4 +122,4 @@ async function requestCatAttributes(
 
 export default mintNft
 
-mintNft("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
+//mintNft("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")

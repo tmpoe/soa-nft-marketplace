@@ -16,8 +16,8 @@ app.post("/:address", (req, res) => {
         //return
     }
     try {
-        mintNft(req.params.address) // Todo make minting non blocking
-        res.send(`nft requested for ${req.params.address}`)
+        mintNft(req.params.address, parseInt(req.query.chainId! as string)) // Todo make minting non blocking
+        res.send(`nft requested for ${req.params.address} on chain ${req.query.chainId}`)
     } catch (e) {
         console.error("Requst failed")
     }
