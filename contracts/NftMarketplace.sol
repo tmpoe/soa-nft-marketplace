@@ -21,7 +21,7 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         address seller;
     }
 
-    uint256 immutable i_mintingFee;
+    uint256 s_mintingFee;
 
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -46,11 +46,11 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
 
     constructor(address nftContractAddress, uint256 mintingFee) {
         nftContract = Nft(nftContractAddress);
-        i_mintingFee = mintingFee;
+        s_mintingFee = mintingFee;
     }
 
     function gatekeep() external payable {
-        if (msg.value < i_mintingFee) {
+        if (msg.value < s_mintingFee) {
             revert NftMarketplace__InsufficientFunds();
         }
         emit NftRequested(msg.sender);
@@ -142,7 +142,11 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
     }
 
     function getMintingFee() public view returns (uint256) {
-        return i_mintingFee;
+        return s_mintingFee;
+    }
+
+    function setMintingFee(uint256 newMintingFee) public onlyOwner {
+        s_mintingFee = newMintingFee;
     }
 
     modifier isOwner(uint256 tokenId, address ierc721TokenAddress) {

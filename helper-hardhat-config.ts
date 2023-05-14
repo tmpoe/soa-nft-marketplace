@@ -86,7 +86,7 @@ const FRONTEND_IPFS_IMAGE_HASH_LOCATION =
 const IPFS_METADATA_HASH_LOCATION = "./constants/ipfs_metadata_hashes.json"
 const IMAGE_PATH = "./images"
 const UPLOAD_TO_IPFS = false
-const MINT_PRICE = ethers.utils.parseEther("0.01")
+const MINT_PRICE = ethers.utils.parseEther("0.0005")
 const DEPLOYER_ADDRESS = "0xC75444ef801b50f5601230db66F784e2078BE7Bb"
 
 export {

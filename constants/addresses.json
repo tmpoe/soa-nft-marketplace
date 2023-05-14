@@ -83,7 +83,8 @@
         "NftCatAttributes": ["0x3b406cd40B07968bC0c5Ab6e886B672c9c2c0188"],
         "NftMarketplace": [
             "0x04ddB53D8629F5b0E1B0FE23867421118C05D9EA",
-            "0xD2f35679e5b532F6B0dd9D45ba6d4598fE51861F"
+            "0xD2f35679e5b532F6B0dd9D45ba6d4598fE51861F",
+            "0xBF8C54331b7A2f7EBd738b90f83824047e2D5D4c"
         ],
         "Nft": [
             "0x040815C75247397a7401309A8bb560a1eeaD18E3",

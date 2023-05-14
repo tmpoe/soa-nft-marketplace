@@ -35,7 +35,6 @@ describe("Marketplace tests", () => {
     })
 
     it("allows only the owner to request", async () => {
-        const fee: BigNumber = await hardhatNftmarketplace.getMintingFee()
         await expect(hardhatNftmarketplace.mintNft("cat1", owner.address))
             .to.emit(hardhatNftmarketplace, "NftMinted")
             .withArgs(owner.address, 0, hardhatNft.address)
@@ -49,6 +48,23 @@ describe("Marketplace tests", () => {
             hardhatNftmarketplace,
             "NftMarketplace__InsufficientFunds"
         )
+    })
+
+    it("allows owner to set a new minting fee", async () => {
+        const originalFee: BigNumber = await hardhatNftmarketplace.getMintingFee()
+        const newFeeToSet: BigNumber = ethers.utils.parseEther("0.2")
+        await hardhatNftmarketplace.setMintingFee(newFeeToSet)
+
+        const newFee = await hardhatNftmarketplace.getMintingFee()
+        assert.isFalse(originalFee.toString() === newFee.toString())
+        assert.isTrue(newFeeToSet.toString() === newFee.toString())
+    })
+
+    it("does not allow non-owner to set a new minting fee", async () => {
+        const newFeeToSet: BigNumber = ethers.utils.parseEther("0.2")
+        await expect(
+            hardhatNftmarketplace.connect(addr1).setMintingFee(newFeeToSet)
+        ).to.be.revertedWith("Ownable: caller is not the owner")
     })
 })
 
