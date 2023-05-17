@@ -1,8 +1,10 @@
 {
   "scripts": {
-    "dev": "npx ts-node --files src/server.ts",
+    "start": "npx ts-node --files src/server.ts",
     "hh-node": "yarn hardhat node --hostname 0.0.0.0",
-    "export-front": "yarn hardhat export --export-all /Users/admin/work/soa-nft-marketplace/soa-nft-marketplace-frontend/constants/abi/contracts.json"
+    "export-front": "yarn hardhat export --export-all /Users/admin/work/soa-nft-marketplace/soa-nft-marketplace-frontend/constants/abi/contracts.json",
+    "buildImage": "docker build --no-cache . -t soa-nft-marketplace-backend",
+    "docker": "docker run -p 5000:5000 soa-nft-marketplace-backend"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.29.3",
