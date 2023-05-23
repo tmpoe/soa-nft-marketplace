@@ -66,6 +66,33 @@ describe("Marketplace tests", () => {
             hardhatNftmarketplace.connect(addr1).setMintingFee(newFeeToSet)
         ).to.be.revertedWith("Ownable: caller is not the owner")
     })
+
+    it("does not allow non-owner to tap treasury", async () => {
+        const tapAmount: BigNumber = ethers.utils.parseEther("0.2")
+        await expect(
+            hardhatNftmarketplace.connect(addr1).tapTreasury(tapAmount)
+        ).to.be.revertedWith("Ownable: caller is not the owner")
+    })
+
+    it("reverts on withdrawing more than the marketplace has", async () => {
+        const tapAmount: BigNumber = ethers.utils.parseEther("0.2")
+        await expect(hardhatNftmarketplace.tapTreasury(tapAmount)).to.be.revertedWithCustomError(
+            hardhatNftmarketplace,
+            "NftMarketplace__InsufficientFunds"
+        )
+    })
+
+    it("allows owner to withdraw", async () => {
+        const ownerStartEth = await ethers.provider.getBalance(owner.address)
+        const tapAmount: BigNumber = ethers.utils.parseEther("0.2")
+        hardhatNftmarketplace.gatekeep({ value: tapAmount })
+        await hardhatNftmarketplace.tapTreasury(tapAmount)
+        const ownerEndEth = await ethers.provider.getBalance(owner.address)
+
+        expect(parseFloat(ethers.utils.formatEther(ownerEndEth.toString())).toFixed(3)).to.equal(
+            parseFloat(ethers.utils.formatEther(ownerStartEth.toString())).toFixed(3)
+        )
+    })
 })
 
 describe("Pre-existing Nft tests", () => {

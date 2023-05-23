@@ -141,6 +141,19 @@ contract NftMarketplace is Ownable, ReentrancyGuard {
         emit NftListingCancelled(tokenId, msg.sender, ierc721TokenAddress);
     }
 
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function tapTreasury(uint256 tapAmount) public onlyOwner {
+        uint256 balance = getBalance();
+        if (tapAmount > balance) {
+            revert NftMarketplace__InsufficientFunds();
+        }
+        address payable to = payable(msg.sender);
+        to.transfer(tapAmount);
+    }
+
     function getMintingFee() public view returns (uint256) {
         return s_mintingFee;
     }
