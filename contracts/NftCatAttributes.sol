@@ -18,13 +18,14 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         red,
         numberOfColors
     }
+
     enum Rarity {
-        common,
-        uncommon,
-        rare,
-        epic,
-        legendary,
         mythic,
+        legendary,
+        epic,
+        rare,
+        uncommon,
+        common,
         numberOfRarities
     }
 
@@ -60,7 +61,7 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         i_subscriptionId = subscriptionId;
         i_gasLane = gasLane;
         i_callbackGasLimit = callbackGasLimit;
-        rarity_values = [0, 6600, 8100, 9100, 9600, 9900];
+        rarity_values = [9900, 9600, 9100, 8100, 6600];
     }
 
     function requestCatAttributes(address owner) external onlyOwner returns (uint256 requestId) {
@@ -97,13 +98,12 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         );
     }
 
-    function getRarity(uint256) private view returns (Rarity) {
-        uint256 rarity = 0;
+    function getRarity(uint256 rarity) public view returns (Rarity) {
         for (uint256 i = 0; i < rarity_values.length; i++) {
-            if (rarity < rarity_values[i]) {
+            if (rarity > rarity_values[i]) {
                 return Rarity(i);
             }
         }
-        return Rarity(0);
+        return Rarity(5);
     }
 }

@@ -61,6 +61,25 @@ describe("Cat attribute tests", () => {
         ).to.be.revertedWith("Ownable: caller is not the owner")
     })
 
+    var rarities = [
+        { rarity_value: 10000, expected: 0 },
+        { rarity_value: 9999, expected: 0 },
+        { rarity_value: 9900, expected: 1 },
+        { rarity_value: 9600, expected: 2 },
+        { rarity_value: 9100, expected: 3 },
+        { rarity_value: 8100, expected: 4 },
+        { rarity_value: 6600, expected: 5 },
+    ]
+    rarities.forEach(function (test) {
+        it(`can calculate rarity: ${test.rarity_value}`, async () => {
+            console.log(
+                test.rarity_value,
+                await hardhatNftCatAttributes.getRarity(test.rarity_value)
+            )
+            assert(test.expected == (await hardhatNftCatAttributes.getRarity(test.rarity_value)))
+        })
+    })
+
     it("mints NFT after random number returned", async function () {
         await new Promise<void>(async (resolve, reject) => {
             hardhatNftCatAttributes.once(

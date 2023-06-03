@@ -116,8 +116,6 @@ let owner: SignerWithAddress,
                           hardhatNftCatAttributes.address
                       )
                       const rec = await tx.wait()
-                      console.debug(tx)
-                      console.debug(rec)
                   } catch (e) {
                       console.debug(e)
                       reject(e)
