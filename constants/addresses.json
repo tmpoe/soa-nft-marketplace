@@ -80,11 +80,15 @@
         "VrfCoordinatorV2Mock": ["dummy", "0x5fbdb2315678afecb367f032d93f642f64180aa3"]
     },
     "11155111": {
-        "NftCatAttributes": ["0x3b406cd40B07968bC0c5Ab6e886B672c9c2c0188"],
+        "NftCatAttributes": [
+            "0x3b406cd40B07968bC0c5Ab6e886B672c9c2c0188",
+            "0xe033cD29d7c9650251FE3B8060A02B9c673FB515"
+        ],
         "NftMarketplace": [
             "0x04ddB53D8629F5b0E1B0FE23867421118C05D9EA",
             "0xD2f35679e5b532F6B0dd9D45ba6d4598fE51861F",
-            "0xBF8C54331b7A2f7EBd738b90f83824047e2D5D4c"
+            "0xBF8C54331b7A2f7EBd738b90f83824047e2D5D4c",
+            "0x22365c252Bb294B2C3fBA2eCfc3b0B80D89850A0"
         ],
         "Nft": [
             "0x040815C75247397a7401309A8bb560a1eeaD18E3",
