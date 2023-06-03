@@ -41,6 +41,7 @@ async function mintNft(requester: string, chainId: number) {
                 color: Number,
                 playfulness: BigNumber,
                 cuteness: BigNumber,
+                rarity: BigNumber,
                 event
             ) => {
                 try {
@@ -56,6 +57,7 @@ async function mintNft(requester: string, chainId: number) {
                             value: EYE_COLOR[color as keyof typeof EYE_COLOR],
                         },
                         { trait_type: "cuteness", value: cuteness.toString() },
+                        { trait_type: "rarity", value: rarity.toString() },
                     ]
                     const metadata: tokenMetadata = {
                         name: owner + "_" + requestId,
