@@ -18,8 +18,19 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         red,
         numberOfColors
     }
+    enum Rarity {
+        common,
+        uncommon,
+        rare,
+        epic,
+        legendary,
+        mythic,
+        numberOfRarities
+    }
+
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 4;
+    uint256[] private rarity_values = new uint256[](6);
 
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     uint64 private immutable i_subscriptionId;
@@ -35,7 +46,8 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         Breed breed,
         Color eyecolor,
         uint256 playfulness,
-        uint256 cuteness
+        uint256 cuteness,
+        Rarity rarity
     );
 
     constructor(
@@ -48,6 +60,7 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         i_subscriptionId = subscriptionId;
         i_gasLane = gasLane;
         i_callbackGasLimit = callbackGasLimit;
+        rarity_values = [0, 6600, 8100, 9100, 9600, 9900];
     }
 
     function requestCatAttributes(address owner) external onlyOwner returns (uint256 requestId) {
@@ -71,6 +84,7 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
         uint256 eyeColorIndex = randomWords[1] % uint256(Color.numberOfColors);
         uint256 playfulness = randomWords[2] % 100;
         uint256 cuteness = randomWords[3] % 100;
+        Rarity rarity = getRarity(playfulness * cuteness);
 
         emit NftCatAttributesCreated(
             requestId,
@@ -78,7 +92,18 @@ contract NftCatAttributes is VRFConsumerBaseV2, Ownable {
             Breed(breedIndex),
             Color(eyeColorIndex),
             playfulness,
-            cuteness
+            cuteness,
+            rarity
         );
+    }
+
+    function getRarity(uint256) private view returns (Rarity) {
+        uint256 rarity = 0;
+        for (uint256 i = 0; i < rarity_values.length; i++) {
+            if (rarity < rarity_values[i]) {
+                return Rarity(i);
+            }
+        }
+        return Rarity(0);
     }
 }

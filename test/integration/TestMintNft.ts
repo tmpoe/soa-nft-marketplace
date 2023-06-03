@@ -49,8 +49,6 @@ let owner: SignerWithAddress,
               nftCatAttributes = await ethers.getContractFactory("NftCatAttributes")
               const gasLane = ethers.constants.HashZero
 
-              //hardhatNftCatAttributes = await nftCatAttributes.attach(catAttributesAddress)
-
               hardhatNftCatAttributes = await nftCatAttributes.deploy(
                   hardhatVrfCoordinatorV2Mock.address,
                   subscriptionId,
@@ -79,10 +77,19 @@ let owner: SignerWithAddress,
               await new Promise<void>(async (resolve, reject) => {
                   hardhatNftCatAttributes.once(
                       "NftCatAttributesCreated",
-                      async (requestId, owner, breed, color, playfulness, cuteness, event) => {
+                      async (
+                          requestId,
+                          owner,
+                          breed,
+                          color,
+                          playfulness,
+                          cuteness,
+                          rarity,
+                          event
+                      ) => {
                           console.debug("triggered")
                           try {
-                              const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}`
+                              const jumbledUpAttributes = `${requestId.toString()}_${owner}_${breed}_${color}_${playfulness.toString()}_${cuteness.toString()}_${rarity}`
                               console.debug(owner)
                               expect(
                                   await hardhatNftmarketplace.mintNft(jumbledUpAttributes, owner)
@@ -101,6 +108,7 @@ let owner: SignerWithAddress,
                   )
                   try {
                       console.debug(owner.address)
+                      console.debug(hardhatNftCatAttributes.address)
                       let tx = await hardhatNftCatAttributes.requestCatAttributes(owner.address)
                       let receipt = await tx.wait(1)
                       tx = await hardhatVrfCoordinatorV2Mock.fulfillRandomWords(
@@ -108,6 +116,8 @@ let owner: SignerWithAddress,
                           hardhatNftCatAttributes.address
                       )
                       const rec = await tx.wait()
+                      console.debug(tx)
+                      console.debug(rec)
                   } catch (e) {
                       console.debug(e)
                       reject(e)

@@ -65,7 +65,16 @@ describe("Cat attribute tests", () => {
         await new Promise<void>(async (resolve, reject) => {
             hardhatNftCatAttributes.once(
                 "NftCatAttributesCreated",
-                async (requestId, owner_address, breed, color, playfulness, cuteness, event) => {
+                async (
+                    requestId,
+                    owner_address,
+                    breed,
+                    color,
+                    playfulness,
+                    cuteness,
+                    rarity,
+                    event
+                ) => {
                     console.debug("triggered")
                     try {
                         assert.notEqual(requestId, undefined)
@@ -74,6 +83,7 @@ describe("Cat attribute tests", () => {
                         assert.notEqual(color, undefined)
                         assert.notEqual(playfulness, undefined)
                         assert.notEqual(cuteness, undefined)
+                        assert.notEqual(rarity, undefined)
                         resolve()
                     } catch (e) {
                         console.debug(e)
