@@ -40,11 +40,11 @@ Local thegraph node - run local eth node before!
 cd graph_utils
 ./run-graph-node.sh
 
-When node is up
+//When node is up
 
 graph init
 
-Wait some
+//Wait some
 ```
 
 To interact with them either use the server (preferred way) or use the scripts in ./scripts (might be severly outdated)
@@ -54,7 +54,7 @@ To interact with them either use the server (preferred way) or use the scripts i
 ```
 yarn buildImage
 
-push to gcloud
+//push to gcloud
 
 fire up VM instance
 ```
