@@ -82,7 +82,10 @@
     "11155111": {
         "NftCatAttributes": [
             "0x3b406cd40B07968bC0c5Ab6e886B672c9c2c0188",
-            "0xe033cD29d7c9650251FE3B8060A02B9c673FB515"
+            "0xe033cD29d7c9650251FE3B8060A02B9c673FB515",
+            "0x3F6666e71a3F222D07a0E06F52aac4608C2c044A",
+            "0xf70ea1757266b935395c330a2cbd03b4d0a9c62c",
+            "0x8F01f4Adc7D4f43EA4063Bb415cb7Be4ac02ee6f"
         ],
         "NftMarketplace": [
             "0x04ddB53D8629F5b0E1B0FE23867421118C05D9EA",
