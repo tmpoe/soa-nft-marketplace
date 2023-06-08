@@ -49,6 +49,8 @@ graph init
 
 To interact with them either use the server (preferred way) or use the scripts in ./scripts (might be severly outdated)
 
+For new nft cat attribute contracts do not forget to have chainlink subscription!
+
 ### Online prod
 
 ```
