@@ -99,6 +99,18 @@ Users can buy listed NFTs they don’t own.
 
 Users can list NFTs for dollars (?). - Would be interesing. Might come back to make this happen.
 
+### Some explanations
+
+I chose to have a separate server for minting. Both for a challange and for learning purposes. Moving all of it to client side would be convenient (less resources to handle/host and no problems with requests (error handling, responses etc)).
+
+A bottleneck is the response time from the line of
+
+```typescript
+await requestCatAttributes(nftCatAttributes, chainData, chain, requester)
+```
+
+This is the first half of the minting process so at least client side only have to wait this one out. Because node and express js are not blocking other requests during this time I am okay with it.
+
 ### Technical
 
 Stack:
